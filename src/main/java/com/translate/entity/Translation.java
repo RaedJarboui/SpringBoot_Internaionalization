@@ -5,17 +5,18 @@
 package com.translate.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 
 /**
  * {@link } class.
@@ -25,6 +26,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "translation")
+@TypeDef(name = "json", typeClass = JsonStringType.class)
+
 public class Translation implements Serializable {
 
 	/**
@@ -41,25 +44,14 @@ public class Translation implements Serializable {
 	private Long object_id;
 	@Column(name = "selected_column")
 	private String selected_column;
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "translation")
-	private List<Langues> translations = new ArrayList<>();
+	@Type(type = "json")
+	@Column(columnDefinition = "json")
+	private List<Langues> translations;
 
-	/**
-	 * @return the selected_column
+	/*
+	 * @OneToMany(cascade = CascadeType.ALL)
+	 * @JoinColumn(name = "translation") private List<Langues> translations = new ArrayList<>();
 	 */
-	public String getSelected_column() {
-
-		return selected_column;
-	}
-
-	/**
-	 * @param selected_column the selected_column to set
-	 */
-	public void setSelected_column(String selected_column) {
-
-		this.selected_column = selected_column;
-	}
 
 	/**
 	 * @return the translations
@@ -75,6 +67,22 @@ public class Translation implements Serializable {
 	public void setTranslations(List<Langues> translations) {
 
 		this.translations = translations;
+	}
+
+	/**
+	 * @return the selected_column
+	 */
+	public String getSelected_column() {
+
+		return selected_column;
+	}
+
+	/**
+	 * @param selected_column the selected_column to set
+	 */
+	public void setSelected_column(String selected_column) {
+
+		this.selected_column = selected_column;
 	}
 
 	/**

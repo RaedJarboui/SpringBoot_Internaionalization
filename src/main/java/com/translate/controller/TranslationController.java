@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.translate.entity.Translation;
 import com.translate.service.TranslationService;
 
@@ -34,7 +36,17 @@ public class TranslationController {
 	@ResponseBody
 	public void addTranslation(@RequestBody Translation t) {
 
-		translationService.addTranslation(t);
+		try {
+			translationService.addTranslation(t);
+		}
+		catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@GetMapping("/translate/get")

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -26,7 +27,7 @@ public class Langues implements Serializable {
 	 */
 	private static final long serialVersionUID = 7310818547674347850L;
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "langue_id")
 	public Long id;
 	@Column(name = "langue")

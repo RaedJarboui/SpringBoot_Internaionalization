@@ -47,45 +47,53 @@ public class TranslationService {
 		// List<Translation> translations = jsonArrayToObjectList();
 
 		boolean found = false;
-		boolean found1 = true;
+		// boolean found1 = true;
 
 		if (arrayTranslations.size() == 0) {
 			translationRepository.save(t);
+			System.out.println("size 0");
+
 		}
+		else {
+			System.out.println("size not 0");
 
-		for (int i = 0; i < arrayTranslations.size(); i++) {
-			if (arrayTranslations.get(i).getObject_id() == t.getObject_id() && arrayTranslations
-					.get(i).getSelected_column().contains(t.getSelected_column())) {
+			// for (int i = 0; i < arrayTranslations.size(); i++) {
 
-				found = true;
-				List<Langues> langues = arrayTranslations.get(i).getTranslations();
-				langues.addAll(t.getTranslations());
-
+			// if (arrayTranslations.get(i).getObject_id() == t.getObject_id()) {
+			for (Translation ts : arrayTranslations) {
+				if (ts.getObject_id() == t.getObject_id()) {
+					if (ts.getSelected_column().equals(t.getSelected_column())) {
+						found = true;
+						List<Langues> langues = ts.getTranslations();
+						langues.addAll(t.getTranslations());
+						translationRepository.save(ts);
+						break; // Break out of the loop to skip the remaining items
+					}
+				}
 			}
-			else
-				found = false;
-			if (!found) {
-				System.out.println("not found");
-			}
-			else {
-				System.out.println("found");
-				translationRepository.save(arrayTranslations.get(i));
-			}
-			if (arrayTranslations.get(i).getObject_id() == t.getObject_id() && !arrayTranslations
-					.get(i).getSelected_column().contains(t.getSelected_column())) {
 
-				found1 = false;
-				// translationRepository.save(t);
+			/*
+			 * if (arrayTranslations.get(i).getSelected_column() .contains(t.getSelected_column()))
+			 * { found = true; System.out.println("found"); System.out.println(i); List<Langues>
+			 * langues = arrayTranslations.get(i).getTranslations();
+			 * langues.addAll(t.getTranslations()); break; }
+			 */
 
-			}
-			else
-				found1 = true;
 		}
-		if (!found1) {
+		if (found) {
+			System.out.println("found");
+
+		}
+		else {
+			System.out.println("not found");
+			// System.out.println(i);
+
 			translationRepository.save(t);
+
 		}
-		else
-			System.out.println("can't save");
+		// }
+
+		// }
 
 		//
 

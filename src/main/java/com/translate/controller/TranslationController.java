@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,13 @@ import com.translate.service.TranslationService;
 public class TranslationController {
 	@Autowired
 	TranslationService translationService;
+
+	@PutMapping("/translate/edit/{id}")
+	@ResponseBody
+	public void editTranslation(@RequestBody Translation t, @PathVariable("id") Long id) {
+
+		translationService.editTranslation(t, id);
+	}
 
 	@PostMapping("/translate/add")
 	@ResponseBody
@@ -54,6 +62,14 @@ public class TranslationController {
 	public List<Translation> getAllTranslations() {
 
 		return translationService.getAllTranslation();
+	}
+
+	@GetMapping("/translation/get/{id}")
+	@ResponseBody
+	public Translation getTranslationByColumn(@RequestBody Translation t,
+			@PathVariable("id") Long id) {
+
+		return translationService.getTranslationByColumn(t, id);
 	}
 
 	@GetMapping("/translate/get/{id}")

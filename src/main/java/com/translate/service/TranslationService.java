@@ -110,6 +110,38 @@ public class TranslationService {
 
 	}
 
+	public void removeTranslation(int id, Translation t) {
+
+		List<Translation> arrayTranslations = translationRepository.findAll();
+		boolean found = false;
+		for (int i = 0; i < arrayTranslations.size(); i++) {
+			if (arrayTranslations.get(i).getObject_id() == id
+					&& arrayTranslations.get(i).getName_table().equals(t.getName_table())
+					&& arrayTranslations.get(i).getSelected_column()
+							.equals((t.getSelected_column()))) {
+				found = true;
+				translationRepository.delete(arrayTranslations.get(i));
+				break;
+
+			}
+			else {
+				found = false;
+				translationRepository.save(arrayTranslations.get(i));
+
+				System.out.println(arrayTranslations.get(i).getObject_id());
+
+			}
+
+		}
+		if (found) {
+			System.out.println("element  found");
+
+		}
+		else
+			System.out.println("element not found");
+
+	}
+
 	public void addTranslation(Translation t) throws JsonMappingException, JsonProcessingException {
 
 		List<Translation> arrayTranslations = translationRepository.findAll();

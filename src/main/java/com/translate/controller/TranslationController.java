@@ -64,6 +64,13 @@ public class TranslationController {
 		return translationService.getAllTranslation();
 	}
 
+	@PostMapping("/translation/delete/{id}")
+	@ResponseBody
+	public void removeTranslation(@PathVariable("id") int id, @RequestBody Translation t) {
+
+		translationService.removeTranslation(id, t);
+	}
+
 	@GetMapping("/translation/get/{id}")
 	@ResponseBody
 	public Translation getTranslationByColumn(@RequestBody Translation t,

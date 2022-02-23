@@ -6,6 +6,7 @@ package com.translate.controller;
 
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.gson.Gson;
 import com.translate.entity.Translation;
 import com.translate.service.TranslationService;
+
+import lombok.var;
 
 /**
  * {@link } class.
@@ -32,6 +37,8 @@ import com.translate.service.TranslationService;
 public class TranslationController {
 	@Autowired
 	TranslationService translationService;
+	@Autowired
+	private SomeDao dao;
 
 	@PutMapping("/translate/edit/{id}")
 	@ResponseBody
@@ -62,6 +69,48 @@ public class TranslationController {
 	public List<Translation> getAllTranslations() {
 
 		return translationService.getAllTranslation();
+	}
+
+	@GetMapping("/table/data/{tableName}")
+	@ResponseBody
+	public List<JSONObject> getTableData(@PathVariable("tableName") String tableName) {
+
+		var l = dao.listFoodMoneyDateOfPayment(tableName);
+		Gson gson = new Gson();
+
+		// convert your set to json
+		String jsonUsersSet = gson.toJson(l);
+
+		// print your generated json
+		System.out.println("jsonUsersSet: " + jsonUsersSet);
+
+		System.out.println(l);
+		System.out.println(JSON.toJSONString(l));
+		// JSONArray jsonArray = JSONArray.fromObject(l);
+		// System.out.println(jsonArray);
+
+		return l;
+	}
+
+	@GetMapping("/list/table")
+	@ResponseBody
+	public List<String> listTable() {
+
+		return translationService.List_Tables();
+	}
+
+	@GetMapping("/column/table/{value}")
+	@ResponseBody
+	public List<String> columnTable(@PathVariable("value") String value) {
+
+		return translationService.Columns_Tables(value);
+	}
+
+	@GetMapping("/data/table/{value}")
+	@ResponseBody
+	public List<Object> dataTable(@PathVariable("value") String value) {
+
+		return translationService.Data_Tables(value);
 	}
 
 	@PostMapping("/translation/delete/{id}")

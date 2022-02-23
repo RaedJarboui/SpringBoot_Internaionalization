@@ -77,6 +77,21 @@ public class TranslationService {
 
 	}
 
+	public List<String> List_Tables() {
+
+		return translationRepository.TablesList();
+	}
+
+	public List<String> Columns_Tables(String value) {
+
+		return translationRepository.TablesColumns(value);
+	}
+
+	public List<Object> Data_Tables(String value) {
+
+		return translationRepository.TablesData(value);
+	}
+
 	public void editTranslation(Translation t, Long id) {
 
 		List<Translation> arrayTranslations = translationRepository.findAll();
@@ -127,7 +142,6 @@ public class TranslationService {
 			else {
 				found = false;
 				translationRepository.save(arrayTranslations.get(i));
-
 				System.out.println(arrayTranslations.get(i).getObject_id());
 
 			}
@@ -135,7 +149,6 @@ public class TranslationService {
 		}
 		if (found) {
 			System.out.println("element  found");
-
 		}
 		else
 			System.out.println("element not found");

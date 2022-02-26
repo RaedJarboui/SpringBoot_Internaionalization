@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.translate.entity.Langues;
 import com.translate.entity.Translation;
 import com.translate.repository.TranslationRepository;
@@ -193,6 +195,41 @@ public class TranslationService {
 
 		}
 
+	}
+
+	public void delete_of_list_translation(Translation t, Long id, String l) {
+
+		List<Translation> arrayTranslations = translationRepository.findAll();
+		ObjectMapper mapper = new ObjectMapper();
+		List<Translation> pojos =
+				mapper.convertValue(arrayTranslations, new TypeReference<List<Translation>>() {});
+		System.out.println(pojos);
+
+		outerloop:
+
+		for (Translation ts : pojos) {
+			if (ts.getObject_id() == id) {
+				if (ts.getSelected_column().equals(t.getSelected_column())) {
+					if (ts.getName_table().equals(t.getName_table()))
+						for (int i = 0; i < ts.getTranslations().size(); i++) {
+							System.out.println(ts.getTranslations().get(i));
+
+							if (ts.getTranslations().get(i).getLangue().equals(l)) {
+								System.out.println("true");
+								List<Langues> langues = ts.getTranslations();
+								langues.remove(i);
+								translationRepository.save(ts);
+
+								break;
+							}
+							else
+								System.out.println("false");
+
+						}
+				}
+			}
+
+		}
 	}
 
 	public List<Translation> getAllTranslation() {

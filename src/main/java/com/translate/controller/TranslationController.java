@@ -6,6 +6,8 @@ package com.translate.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,6 +47,14 @@ public class TranslationController {
 	public void editTranslation(@RequestBody Translation t, @PathVariable("id") Long id) {
 
 		translationService.editTranslation(t, id);
+	}
+
+	@PostMapping("/translate/delete/{id}/{langue}")
+	@ResponseBody
+	public void delete_of_list_translation(@Valid @RequestBody Translation t,
+			@PathVariable("id") Long id, @PathVariable("langue") String l) {
+
+		translationService.delete_of_list_translation(t, id, l);
 	}
 
 	@PostMapping("/translate/add")

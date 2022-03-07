@@ -84,6 +84,11 @@ public class TranslationService {
 		return translationRepository.TablesList();
 	}
 
+	public List<String> Columns_Tables_Type(String value) {
+
+		return translationRepository.TablesColumnsType(value);
+	}
+
 	public List<String> Columns_Tables(String value) {
 
 		return translationRepository.TablesColumns(value);

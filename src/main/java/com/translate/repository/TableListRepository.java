@@ -4,10 +4,10 @@
  */
 package com.translate.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.translate.entity.i18n;
+import com.translate.entity.TableList;
 
 /**
  * {@link } class.
@@ -16,6 +16,6 @@ import com.translate.entity.i18n;
  * @since 0.1.0
  */
 @Repository
-public interface i18nRepository extends CrudRepository<i18n, Long> {
+public interface TableListRepository extends JpaRepository<TableList, Integer> {
 
 }

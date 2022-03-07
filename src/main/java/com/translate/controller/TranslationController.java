@@ -109,9 +109,16 @@ public class TranslationController {
 		return translationService.List_Tables();
 	}
 
+	@GetMapping("/column/type/table/{value}")
+	@ResponseBody
+	public List<String> column_Type_Table(@PathVariable("value") String value) {
+
+		return translationService.Columns_Tables_Type(value);
+	}
+
 	@GetMapping("/column/table/{value}")
 	@ResponseBody
-	public List<String> columnTable(@PathVariable("value") String value) {
+	public List<String> columnsTable(@PathVariable("value") String value) {
 
 		return translationService.Columns_Tables(value);
 	}

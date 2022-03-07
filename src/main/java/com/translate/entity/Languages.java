@@ -29,46 +29,28 @@ public class Languages implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	public Long id;
-	@Column(name = "name")
-
-	private String name;
-	@Column(name = "description")
-
-	private String description;
+	public int id;
 	@Column(name = "locale")
 	String locale;
+	@Column(name = "language_name")
+	private String LanguageName;
+	@Column(name = "global")
+	private Boolean global;
 
 	/**
-	 * @return the name
+	 * @return the id
 	 */
-	public String getName() {
+	public int getId() {
 
-		return name;
+		return id;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param id the id to set
 	 */
-	public void setName(String name) {
+	public void setId(int id) {
 
-		this.name = name;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-
-		this.description = description;
+		this.id = id;
 	}
 
 	/**
@@ -88,19 +70,43 @@ public class Languages implements Serializable {
 	}
 
 	/**
-	 * @return the id
+	 * @return the languageName
 	 */
-	public Long getId() {
+	public String getLanguageName() {
 
-		return id;
+		return LanguageName;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param languageName the languageName to set
 	 */
-	public void setId(Long id) {
+	public void setLanguageName(String languageName) {
 
-		this.id = id;
+		LanguageName = languageName;
+	}
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+
+		return serialVersionUID;
+	}
+
+	/**
+	 * @return the global
+	 */
+	public Boolean getGlobal() {
+
+		return global;
+	}
+
+	/**
+	 * @param global the global to set
+	 */
+	public void setGlobal(Boolean global) {
+
+		this.global = global;
 	}
 
 }

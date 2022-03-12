@@ -6,8 +6,6 @@ package com.translate.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,20 +40,21 @@ public class TranslationController {
 	@Autowired
 	private SomeDao dao;
 
-	@PutMapping("/translate/edit/{id}")
+	@PutMapping("/translate/edit/{field_value}/{column}/{tableName}")
 	@ResponseBody
-	public void editTranslation(@RequestBody Translation t, @PathVariable("id") Long id) {
+	public void editTranslation(@PathVariable("field_value") String field_value,
+			@PathVariable("column") String column, @PathVariable("tableName") String tableName,
+			@RequestBody Translation t) {
 
-		translationService.editTranslation(t, id);
+		translationService.editTranslation(field_value, column, tableName, t);
 	}
 
-	@PostMapping("/translate/delete/{id}/{langue}")
-	@ResponseBody
-	public void delete_of_list_translation(@Valid @RequestBody Translation t,
-			@PathVariable("id") Long id, @PathVariable("langue") String l) {
-
-		translationService.delete_of_list_translation(t, id, l);
-	}
+	/*
+	 * @PostMapping("/translate/delete/{id}/{langue}")
+	 * @ResponseBody public void delete_of_list_translation(@Valid @RequestBody Translation t,
+	 * @PathVariable("id") Long id, @PathVariable("langue") String l) {
+	 * translationService.delete_of_list_translation(t, id, l); }
+	 */
 
 	@PostMapping("/translate/add")
 	@ResponseBody
@@ -130,20 +129,17 @@ public class TranslationController {
 		return translationService.Data_Tables(value);
 	}
 
-	@PostMapping("/translation/delete/{id}")
-	@ResponseBody
-	public void removeTranslation(@PathVariable("id") int id, @RequestBody Translation t) {
+	/*
+	 * @PostMapping("/translation/delete/{id}")
+	 * @ResponseBody public void removeTranslation(@PathVariable("id") int id, @RequestBody
+	 * Translation t) { translationService.removeTranslation(id, t); }
+	 */
 
-		translationService.removeTranslation(id, t);
-	}
-
-	@GetMapping("/translation/get/{id}")
-	@ResponseBody
-	public Translation getTranslationByColumn(@RequestBody Translation t,
-			@PathVariable("id") Long id) {
-
-		return translationService.getTranslationByColumn(t, id);
-	}
+	/*
+	 * @GetMapping("/translation/get/{id}")
+	 * @ResponseBody public Translation getTranslationByColumn(@RequestBody Translation t,
+	 * @PathVariable("id") Long id) { return translationService.getTranslationByColumn(t, id); }
+	 */
 
 	@GetMapping("/translate/get/{id}")
 	@ResponseBody

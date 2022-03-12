@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.translate.entity.Langues;
 import com.translate.entity.Translation;
 import com.translate.repository.TranslationRepository;
@@ -43,41 +41,21 @@ public class TranslationService {
 
 	}
 
-	public Translation getTranslationByColumn(Translation t, Long id) {
-
-		List<Translation> arrayTranslations = translationRepository.findAll();
-		boolean found = false;
-		Translation translation = new Translation();
-
-		for (int i = 0; i < arrayTranslations.size(); i++) {
-			if (arrayTranslations.get(i).getObject_id() == id
-					&& arrayTranslations.get(i).getName_table().equals(t.getName_table())
-					&& arrayTranslations.get(i).getSelected_column()
-							.equals((t.getSelected_column()))) {
-				found = true;
-				System.out.println("element found");
-				System.out.println(arrayTranslations.get(i));
-				translation.setName_table(arrayTranslations.get(i).getName_table());
-				translation.setObject_id(id);
-				translation.setSelected_column(arrayTranslations.get(i).getSelected_column());
-				translation.setTranslations(arrayTranslations.get(i).getTranslations());
-				break;
-			}
-			else {
-				found = false;
-
-			}
-
-		}
-		if (found) {
-			// System.out.println("element found");
-			return translation;
-		}
-		else
-			System.out.println("element not found");
-		return null;
-
-	}
+	/*
+	 * public Translation getTranslationByColumn(Translation t, Long id) { List<Translation>
+	 * arrayTranslations = translationRepository.findAll(); boolean found = false; Translation
+	 * translation = new Translation(); for (int i = 0; i < arrayTranslations.size(); i++) { if
+	 * (arrayTranslations.get(i).getObject_id() == id &&
+	 * arrayTranslations.get(i).getName_table().equals(t.getName_table()) &&
+	 * arrayTranslations.get(i).getSelected_column() .equals((t.getSelected_column()))) { found =
+	 * true; System.out.println("element found"); System.out.println(arrayTranslations.get(i));
+	 * translation.setName_table(arrayTranslations.get(i).getName_table());
+	 * translation.setObject_id(id);
+	 * translation.setSelected_column(arrayTranslations.get(i).getSelected_column());
+	 * translation.setTranslations(arrayTranslations.get(i).getTranslations()); break; } else {
+	 * found = false; } } if (found) { // System.out.println("element found"); return translation; }
+	 * else System.out.println("element not found"); return null; }
+	 */
 
 	public List<String> List_Tables() {
 
@@ -99,68 +77,45 @@ public class TranslationService {
 		return translationRepository.TablesData(value);
 	}
 
-	public void editTranslation(Translation t, Long id) {
+	public void editTranslation(String fieldvalue, String column, String tableName, Translation t) {
 
 		List<Translation> arrayTranslations = translationRepository.findAll();
 		boolean found = false;
 		for (int i = 0; i < arrayTranslations.size(); i++) {
-			if (arrayTranslations.get(i).getObject_id() == id
-					&& arrayTranslations.get(i).getName_table().equals(t.getName_table())
-					&& arrayTranslations.get(i).getSelected_column()
-							.equals((t.getSelected_column()))) {
+			System.out.println(arrayTranslations.get(i).getField_value());
+			if (arrayTranslations.get(i).getField_value().equals(fieldvalue)
+					&& arrayTranslations.get(i).getSelected_column().equals(column)
+					&& arrayTranslations.get(i).getName_table().equals(tableName)) {
 				found = true;
-				arrayTranslations.get(i).setName_table(t.getName_table());
-				arrayTranslations.get(i).setObject_id(id);
-				arrayTranslations.get(i).setSelected_column(t.getSelected_column());
+				System.out.println("true");
+				System.out.println(t.getTranslations());
 				arrayTranslations.get(i).setTranslations(t.getTranslations());
 				translationRepository.save(arrayTranslations.get(i));
 				break;
-
 			}
 			else {
 				found = false;
 				System.out.println("false");
+				System.out.println(column);
 
 			}
-
 		}
 		if (!found) {
-
 			System.out.println("element not found");
-
 		}
-
 	}
 
-	public void removeTranslation(int id, Translation t) {
-
-		List<Translation> arrayTranslations = translationRepository.findAll();
-		boolean found = false;
-		for (int i = 0; i < arrayTranslations.size(); i++) {
-			if (arrayTranslations.get(i).getObject_id() == id
-					&& arrayTranslations.get(i).getName_table().equals(t.getName_table())
-					&& arrayTranslations.get(i).getSelected_column()
-							.equals((t.getSelected_column()))) {
-				found = true;
-				translationRepository.delete(arrayTranslations.get(i));
-				break;
-
-			}
-			else {
-				found = false;
-				translationRepository.save(arrayTranslations.get(i));
-				System.out.println(arrayTranslations.get(i).getObject_id());
-
-			}
-
-		}
-		if (found) {
-			System.out.println("element  found");
-		}
-		else
-			System.out.println("element not found");
-
-	}
+	/*
+	 * public void removeTranslation(int id, Translation t) { List<Translation> arrayTranslations =
+	 * translationRepository.findAll(); boolean found = false; for (int i = 0; i <
+	 * arrayTranslations.size(); i++) { if (arrayTranslations.get(i).getObject_id() == id &&
+	 * arrayTranslations.get(i).getName_table().equals(t.getName_table()) &&
+	 * arrayTranslations.get(i).getSelected_column() .equals((t.getSelected_column()))) { found =
+	 * true; translationRepository.delete(arrayTranslations.get(i)); break; } else { found = false;
+	 * translationRepository.save(arrayTranslations.get(i));
+	 * System.out.println(arrayTranslations.get(i).getObject_id()); } } if (found) {
+	 * System.out.println("element  found"); } else System.out.println("element not found"); }
+	 */
 
 	public void addTranslation(Translation t) throws JsonMappingException, JsonProcessingException {
 
@@ -177,7 +132,7 @@ public class TranslationService {
 			System.out.println("size not 0");
 
 			for (Translation ts : arrayTranslations) {
-				if (ts.getObject_id() == t.getObject_id()) {
+				if (ts.getField_value().equals(t.getField_value())) {
 					if (ts.getSelected_column().equals(t.getSelected_column())) {
 						found = true;
 						List<Langues> langues = ts.getTranslations();
@@ -202,40 +157,19 @@ public class TranslationService {
 
 	}
 
-	public void delete_of_list_translation(Translation t, Long id, String l) {
-
-		List<Translation> arrayTranslations = translationRepository.findAll();
-		ObjectMapper mapper = new ObjectMapper();
-		List<Translation> pojos =
-				mapper.convertValue(arrayTranslations, new TypeReference<List<Translation>>() {});
-		System.out.println(pojos);
-
-		outerloop:
-
-		for (Translation ts : pojos) {
-			if (ts.getObject_id() == id) {
-				if (ts.getSelected_column().equals(t.getSelected_column())) {
-					if (ts.getName_table().equals(t.getName_table()))
-						for (int i = 0; i < ts.getTranslations().size(); i++) {
-							System.out.println(ts.getTranslations().get(i));
-
-							if (ts.getTranslations().get(i).getLangue().equals(l)) {
-								System.out.println("true");
-								List<Langues> langues = ts.getTranslations();
-								langues.remove(i);
-								translationRepository.save(ts);
-
-								break;
-							}
-							else
-								System.out.println("false");
-
-						}
-				}
-			}
-
-		}
-	}
+	/*
+	 * public void delete_of_list_translation(Translation t, Long id, String l) { List<Translation>
+	 * arrayTranslations = translationRepository.findAll(); ObjectMapper mapper = new
+	 * ObjectMapper(); List<Translation> pojos = mapper.convertValue(arrayTranslations, new
+	 * TypeReference<List<Translation>>() {}); System.out.println(pojos); outerloop: for
+	 * (Translation ts : pojos) { if (ts.getObject_id() == id) { if
+	 * (ts.getSelected_column().equals(t.getSelected_column())) { if
+	 * (ts.getName_table().equals(t.getName_table())) for (int i = 0; i <
+	 * ts.getTranslations().size(); i++) { System.out.println(ts.getTranslations().get(i)); if
+	 * (ts.getTranslations().get(i).getLangue().equals(l)) { System.out.println("true");
+	 * List<Langues> langues = ts.getTranslations(); langues.remove(i);
+	 * translationRepository.save(ts); break; } else System.out.println("false"); } } } } }
+	 */
 
 	public List<Translation> getAllTranslation() {
 

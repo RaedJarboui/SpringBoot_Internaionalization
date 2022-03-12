@@ -36,12 +36,12 @@ public class Translation implements Serializable {
 	private static final long serialVersionUID = -7602179343085972411L;
 	@Id
 	@GeneratedValue
-	@Column(name = "product_translation_id")
+	@Column(name = "translation_id")
 	public Long id;
 	@Column(name = "name_table")
 	private String name_table;
-	@Column(name = "object_id")
-	private Long object_id;
+	@Column(name = "field_value")
+	private String field_value;
 	@Column(name = "selected_column")
 	private String selected_column;
 	@Type(type = "json")
@@ -118,19 +118,19 @@ public class Translation implements Serializable {
 	}
 
 	/**
-	 * @return the object_id
+	 * @return the field_value
 	 */
-	public Long getObject_id() {
+	public String getField_value() {
 
-		return object_id;
+		return field_value;
 	}
 
 	/**
-	 * @param object_id the object_id to set
+	 * @param field_value the field_value to set
 	 */
-	public void setObject_id(Long object_id) {
+	public void setField_value(String field_value) {
 
-		this.object_id = object_id;
+		this.field_value = field_value;
 	}
 
 }

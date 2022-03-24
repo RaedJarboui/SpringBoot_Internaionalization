@@ -49,13 +49,6 @@ public class TranslationController {
 		translationService.editTranslation(field_value, column, tableName, t);
 	}
 
-	/*
-	 * @PostMapping("/translate/delete/{id}/{langue}")
-	 * @ResponseBody public void delete_of_list_translation(@Valid @RequestBody Translation t,
-	 * @PathVariable("id") Long id, @PathVariable("langue") String l) {
-	 * translationService.delete_of_list_translation(t, id, l); }
-	 */
-
 	@PostMapping("/translate/add")
 	@ResponseBody
 	public void addTranslation(@RequestBody Translation t) {
@@ -64,11 +57,9 @@ public class TranslationController {
 			translationService.addTranslation(t);
 		}
 		catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -84,20 +75,12 @@ public class TranslationController {
 	@ResponseBody
 	public List<JSONObject> getTableData(@PathVariable("tableName") String tableName) {
 
-		var l = dao.listFoodMoneyDateOfPayment(tableName);
+		var l = dao.getTableData(tableName);
 		Gson gson = new Gson();
-
-		// convert your set to json
 		String jsonUsersSet = gson.toJson(l);
-
-		// print your generated json
 		System.out.println("jsonUsersSet: " + jsonUsersSet);
-
 		System.out.println(l);
 		System.out.println(JSON.toJSONString(l));
-		// JSONArray jsonArray = JSONArray.fromObject(l);
-		// System.out.println(jsonArray);
-
 		return l;
 	}
 
@@ -121,25 +104,6 @@ public class TranslationController {
 
 		return translationService.Columns_Tables(value);
 	}
-
-	@GetMapping("/data/table/{value}")
-	@ResponseBody
-	public List<Object> dataTable(@PathVariable("value") String value) {
-
-		return translationService.Data_Tables(value);
-	}
-
-	/*
-	 * @PostMapping("/translation/delete/{id}")
-	 * @ResponseBody public void removeTranslation(@PathVariable("id") int id, @RequestBody
-	 * Translation t) { translationService.removeTranslation(id, t); }
-	 */
-
-	/*
-	 * @GetMapping("/translation/get/{id}")
-	 * @ResponseBody public Translation getTranslationByColumn(@RequestBody Translation t,
-	 * @PathVariable("id") Long id) { return translationService.getTranslationByColumn(t, id); }
-	 */
 
 	@GetMapping("/translate/get/{id}")
 	@ResponseBody

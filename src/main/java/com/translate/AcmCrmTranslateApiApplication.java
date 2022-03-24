@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 // @EnableEurekaClient
-@ComponentScan({"com.translate.controller", "com.translate.service"})
+@ComponentScan({"com.translate.controller", "com.translate.service", "com.translate.security",
+		"com.translate.security.jwt", "com.translate.security.services"})
 @EntityScan("com.translate.entity")
 @EnableJpaRepositories("com.translate.repository")
 

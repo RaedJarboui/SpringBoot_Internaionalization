@@ -30,9 +30,9 @@ public class Event implements Serializable {
 	@GeneratedValue
 	@Column(name = "event_id")
 	public Long id;
-	@Column(name = "nomEvt")
+	@Column(name = "name")
 	private String name;
-	@Column(name = "lieuEvt")
+	@Column(name = "lieu")
 	private String lieu;
 
 	/**

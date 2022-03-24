@@ -9,6 +9,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,15 +26,24 @@ import com.translate.service.EventService;
  */
 @RestController
 @CrossOrigin
+@RequestMapping("/api/event")
 public class EventController {
 	@Autowired
 	EventService eventService;
 
-	@GetMapping("/events")
+	@GetMapping
 	@ResponseBody
 	public List<Event> getAllEvents() {
 
 		return eventService.getAllEvents();
+	}
+
+	@PostMapping
+	@ResponseBody
+	public Event saveEvent(@RequestBody Event e) {
+
+		return eventService.saveEvent(e);
+
 	}
 
 }

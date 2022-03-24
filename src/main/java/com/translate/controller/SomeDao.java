@@ -23,7 +23,7 @@ public class SomeDao {
 	@Autowired
 	EntityManager em;
 
-	public List<JSONObject> listFoodMoneyDateOfPayment(String tableName) {
+	public List<JSONObject> getTableData(String tableName) {
 
 		String s = "select * from (%s)";
 		String sql = String.format(s, tableName);

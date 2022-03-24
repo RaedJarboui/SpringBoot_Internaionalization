@@ -26,9 +26,6 @@ public interface TranslationRepository extends JpaRepository<Translation, Long> 
 			nativeQuery = true)
 	public List<String> TablesList();
 
-	@Query(value = "select * from product", nativeQuery = true)
-	public List<Object> TablesData(@Param("value") String value);
-
 	@Query(value = "SELECT COLUMN_NAME,DATA_TYPE  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ='translate' AND TABLE_NAME =:value order by ordinal_position",
 			nativeQuery = true)
 	public List<String> TablesColumnsType(@Param("value") String value);

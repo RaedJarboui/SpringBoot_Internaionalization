@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
 import com.translate.entity.Translation;
+import com.translate.repository.TranslationRepository;
 import com.translate.service.TranslationService;
 
 import lombok.var;
@@ -39,6 +42,8 @@ public class TranslationController {
 	TranslationService translationService;
 	@Autowired
 	private SomeDao dao;
+	@Autowired
+	TranslationRepository translationRepository;
 
 	@PutMapping("/translate/edit/{field_value}/{column}/{tableName}")
 	@ResponseBody
@@ -110,6 +115,36 @@ public class TranslationController {
 	public Translation getSingleTranslate(@PathVariable("id") Long id) {
 
 		return translationService.getTranslationById(id);
+
+	}
+
+	@GetMapping("/translate/get/table/{name_table}")
+	@ResponseBody
+	public String name_type_column(@PathVariable("name_table") String name_table) {
+
+		return translationService.name_type_column(name_table);
+
+	}
+
+	@GetMapping("/translate/get/table/data/{name_table}/{selected_column}/{Json}")
+	@ResponseBody
+	public void name_type_column_data(@PathVariable("name_table") String name_table,
+			@PathVariable("selected_column") String selected_column,
+			@PathVariable("Json") Boolean Json) {
+
+		translationService.name_type_column_data(name_table, selected_column, Json);
+
+	}
+
+	@GetMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}")
+	@ResponseBody
+	public ResponseEntity<?> name_type_column_data_json(
+			@PathVariable("name_table") String name_table,
+			@PathVariable("selected_column") String selected_column,
+			@PathVariable("Json") Boolean Json) {
+
+		return ResponseEntity.status(HttpStatus.OK).body(translationService
+				.name_type_column_data_json(name_table, selected_column, Json).toString());
 
 	}
 }

@@ -42,17 +42,17 @@ public class LanguagesController {
 	@PostMapping("/langues")
 	@ResponseBody
 
-	public Languages addLanguage(@RequestBody Languages l) {
+	public Languages addLanguage(@RequestBody Languages languages) {
 
-		return languagesService.addLanguage(l);
+		return languagesService.addLanguage(languages);
 	}
 
 	@PutMapping("/langues/{id}")
 	@ResponseBody
 
-	public Languages addLanguage(@PathVariable int id, @RequestBody Languages l) {
+	public Languages addLanguage(@PathVariable int id, @RequestBody Languages languages) {
 
-		return languagesService.editLanguage(id, l);
+		return languagesService.editLanguage(id, languages);
 	}
 
 	@DeleteMapping("/langues/{id}")

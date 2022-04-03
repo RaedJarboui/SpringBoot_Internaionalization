@@ -22,7 +22,7 @@ import com.translate.service.TableListService;
 /**
  * {@link } class.
  *
- * @author hp
+ * @author Mr Raed
  * @since 0.1.0
  */
 @RestController
@@ -35,14 +35,14 @@ public class TableListController {
 	@ResponseBody
 	public List<TableList> getTablesLists() {
 
-		return tableListService.ListTables();
+		return tableListService.listTables();
 	}
 
 	@GetMapping("list/tables")
 	@ResponseBody
 	public List<String> getTablesList() {
 
-		return tableListService.ListTable();
+		return tableListService.listTable();
 	}
 
 	@PostMapping("list/tables")
@@ -54,9 +54,9 @@ public class TableListController {
 
 	@PutMapping("list/tables/{id}")
 	@ResponseBody
-	public void addTablesList(@PathVariable("id") int id, @RequestBody TableList t) {
+	public void addTablesList(@PathVariable("id") int id, @RequestBody TableList TableList) {
 
-		tableListService.editTableList(id, t);
+		tableListService.editTableList(id, TableList);
 	}
 
 }

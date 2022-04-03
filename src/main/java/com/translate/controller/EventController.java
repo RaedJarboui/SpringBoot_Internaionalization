@@ -40,9 +40,9 @@ public class EventController {
 
 	@PostMapping
 	@ResponseBody
-	public Event saveEvent(@RequestBody Event e) {
+	public Event saveEvent(@RequestBody Event event) {
 
-		return eventService.saveEvent(e);
+		return eventService.saveEvent(event);
 
 	}
 

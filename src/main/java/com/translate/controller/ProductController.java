@@ -40,9 +40,9 @@ public class ProductController {
 
 	@PostMapping
 	@ResponseBody
-	public Product saveProduct(@RequestBody Product p) {
+	public Product saveProduct(@RequestBody Product product) {
 
-		return productService.saveProduct(p);
+		return productService.saveProduct(product);
 	}
 
 }

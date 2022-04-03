@@ -6,6 +6,8 @@ package com.translate.controller;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
 import com.translate.entity.Translation;
 import com.translate.repository.TranslationRepository;
@@ -44,29 +43,22 @@ public class TranslationController {
 	private SomeDao dao;
 	@Autowired
 	TranslationRepository translationRepository;
+	private static final Logger logger = LogManager.getLogger(TranslationController.class);
 
 	@PutMapping("/translate/edit/{field_value}/{column}/{tableName}")
 	@ResponseBody
-	public void editTranslation(@PathVariable("field_value") String field_value,
-			@PathVariable("column") String column, @PathVariable("tableName") String tableName,
-			@RequestBody Translation t) {
+	public void editTranslation(@PathVariable("field_value") String fieldvalue, @PathVariable("column") String column,
+			@PathVariable("tableName") String tableName, @RequestBody Translation translation) {
 
-		translationService.editTranslation(field_value, column, tableName, t);
+		translationService.editTranslation(fieldvalue, column, tableName, translation);
 	}
 
 	@PostMapping("/translate/add")
 	@ResponseBody
-	public void addTranslation(@RequestBody Translation t) {
+	public void addTranslation(@RequestBody Translation translation) {
 
-		try {
-			translationService.addTranslation(t);
-		}
-		catch (JsonMappingException e) {
-			e.printStackTrace();
-		}
-		catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+		translationService.addTranslation(translation);
+
 	}
 
 	@GetMapping("/translate/get")
@@ -83,9 +75,8 @@ public class TranslationController {
 		var l = dao.getTableData(tableName);
 		Gson gson = new Gson();
 		String jsonUsersSet = gson.toJson(l);
-		System.out.println("jsonUsersSet: " + jsonUsersSet);
-		System.out.println(l);
-		System.out.println(JSON.toJSONString(l));
+		logger.info("jsonUsersSet: {} ", jsonUsersSet);
+		logger.info(l);
 		return l;
 	}
 
@@ -93,21 +84,21 @@ public class TranslationController {
 	@ResponseBody
 	public List<String> listTable() {
 
-		return translationService.List_Tables();
+		return translationService.listTables();
 	}
 
 	@GetMapping("/column/type/table/{value}")
 	@ResponseBody
-	public List<String> column_Type_Table(@PathVariable("value") String value) {
+	public List<String> columnTypeTable(@PathVariable("value") String value) {
 
-		return translationService.Columns_Tables_Type(value);
+		return translationService.columnsTablesType(value);
 	}
 
 	@GetMapping("/column/table/{value}")
 	@ResponseBody
 	public List<String> columnsTable(@PathVariable("value") String value) {
 
-		return translationService.Columns_Tables(value);
+		return translationService.columnsTables(value);
 	}
 
 	@GetMapping("/translate/get/{id}")
@@ -120,31 +111,39 @@ public class TranslationController {
 
 	@GetMapping("/translate/get/table/{name_table}")
 	@ResponseBody
-	public String name_type_column(@PathVariable("name_table") String name_table) {
+	public String nametypecolumn(@PathVariable("name_table") String nameTable) {
 
-		return translationService.name_type_column(name_table);
+		return translationService.nameTypeColumn(nameTable);
 
 	}
 
 	@GetMapping("/translate/get/table/data/{name_table}/{selected_column}/{Json}")
 	@ResponseBody
-	public void name_type_column_data(@PathVariable("name_table") String name_table,
-			@PathVariable("selected_column") String selected_column,
-			@PathVariable("Json") Boolean Json) {
+	public void nameTypeColumnData(@PathVariable("name_table") String nameTable,
+			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json) {
 
-		translationService.name_type_column_data(name_table, selected_column, Json);
+		translationService.nameColType(nameTable, selectedColumn, json);
 
 	}
 
 	@GetMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}")
 	@ResponseBody
-	public ResponseEntity<?> name_type_column_data_json(
-			@PathVariable("name_table") String name_table,
-			@PathVariable("selected_column") String selected_column,
-			@PathVariable("Json") Boolean Json) {
+	public ResponseEntity<?> nameTypeColumnDataJson(@PathVariable("name_table") String nameTable,
+			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json) {
 
-		return ResponseEntity.status(HttpStatus.OK).body(translationService
-				.name_type_column_data_json(name_table, selected_column, Json).toString());
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(translationService.nameTypeColumnDatajson(nameTable, selectedColumn, json).toString());
 
 	}
+
+	@GetMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}/select1")
+	@ResponseBody
+
+	public ResponseEntity<?> columndatajson(@PathVariable("name_table") String nameTable,
+			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json,
+			@RequestBody String column) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(translationService.select1(nameTable, selectedColumn, json, column).toString());
+	}
+
 }

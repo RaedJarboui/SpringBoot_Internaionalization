@@ -27,11 +27,9 @@ public class SomeDao {
 
 		String s = "select * from (%s)";
 		String sql = String.format(s, tableName);
-		System.out.println(sql);
 
-		List<JSONObject> test = em.createNativeQuery(sql).getResultList();
-
-		return test;
+		return em.createNativeQuery(sql).getResultList();
+		
 	}
 
 }

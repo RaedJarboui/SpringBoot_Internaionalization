@@ -48,11 +48,6 @@ public class Translation implements Serializable {
 	@Column(columnDefinition = "json")
 	private List<Langues> translations;
 
-	/*
-	 * @OneToMany(cascade = CascadeType.ALL)
-	 * @JoinColumn(name = "translation") private List<Langues> translations = new ArrayList<>();
-	 */
-
 	/**
 	 * @return the translations
 	 */

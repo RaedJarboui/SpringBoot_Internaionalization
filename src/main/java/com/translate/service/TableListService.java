@@ -6,78 +6,53 @@ package com.translate.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.translate.entity.TableList;
-import com.translate.repository.TableListRepository;
-import com.translate.repository.TranslationRepository;
 
 /**
- * {@link } class.
+ * 
+ * {@link TableListService} class.
  *
- * @author hp
- * @since 0.1.0
+ * @author Mr Raed
+ * @since 0.0.1
+ *
  */
-@Service
-public class TableListService {
-	@Autowired
-	TableListRepository tableListRepository;
-	@Autowired
-	TranslationRepository translationRepository;
+public interface TableListService {
 
-	public List<String> ListTable() {
+	/**
+	 * List table.
+	 *
+	 * @return the list
+	 */
+	public List<String> listTable();
 
-		return translationRepository.TablesList();
-	}
+	/**
+	 * List tables.
+	 *
+	 * @return the list
+	 */
+	public List<TableList> listTables();
 
-	public List<TableList> ListTables() {
+	/**
+	 * Adds the list table.
+	 *
+	 * @param l the l
+	 */
+	public void addListTable(List<TableList> l);
 
-		return tableListRepository.findAll();
-	}
+	/**
+	 * Table list.
+	 *
+	 * @return the list
+	 */
+	public List<TableList> tableList();
 
-	public void addListTable(List<TableList> l) {
+	/**
+	 * Edits the table list.
+	 *
+	 * @param id the id
+	 * @param t  the t
+	 * @return the table list
+	 */
+	public TableList editTableList(int id, TableList t);
 
-		tableListRepository.saveAll(l);
-
-	}
-
-	public List<TableList> TableList() {
-
-		List<TableList> list_tabList = tableListRepository.findAll();
-		List<String> tableNameStrings = translationRepository.TablesList();
-		boolean boolval = false;
-		for (TableList tab : list_tabList) {
-			for (String table : tableNameStrings) {
-				boolval = tab.getTableName().equals(table);
-
-			}
-
-		}
-		if (boolval == false) {
-			System.out.println("false");
-			for (String table : tableNameStrings) {
-				TableList tableList = new TableList(table, false);
-				list_tabList.add(tableList);
-				tableListRepository.save(tableList);
-			}
-
-		}
-		else {
-			System.out.println("true");
-			return null;
-
-		}
-
-		return list_tabList;
-
-	}
-
-	public TableList editTableList(int id, TableList t) {
-
-		TableList tab = tableListRepository.findById(id).get();
-		tab.setTableName(t.getTableName());
-		tab.setTranslate(t.getTranslate());
-		return tableListRepository.save(tab);
-	}
 }

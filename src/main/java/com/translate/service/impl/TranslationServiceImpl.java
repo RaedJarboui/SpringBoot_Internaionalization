@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.translate.controller.SomeDao;
+import com.translate.dto.ColumnsDTO;
 import com.translate.entity.Languages;
 import com.translate.entity.Langues;
 import com.translate.entity.Translation;
@@ -411,13 +412,17 @@ public class TranslationServiceImpl implements TranslationService {
 		String valueJson = "VALUE_JSON";
 		var l = dao.getTableData(nameTable);
 		var tables = JSON.toJSONString(l);
-		JSONArray jsonarray = new JSONArray();
 		JSONArray jsonArray = new JSONArray(tables);
+		logger.info("jsonArray : {}", jsonArray);
 		List<String> tabColumnStrings = translationRepository.TablesColumns(nameTable);
 		int columnIndex = tabColumnStrings.indexOf(selectedColumn);
+		logger.info("columnIndex : {}", columnIndex);
 		int abacusNameColumnIndex = tabColumnStrings.indexOf(abacus);
+		logger.info("abacusNameColumnIndex : {}", abacusNameColumnIndex);
 		JSONArray selectarray = new JSONArray();
+		logger.info("column : {}", column);
 		String result = column.substring(1, column.length() - 1);
+		logger.info("result : {}", result);
 		if (abacusNameColumnIndex != -1) {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				if (((JSONArray) jsonArray.get(i)).get(abacusNameColumnIndex).equals(result)) {
@@ -438,18 +443,104 @@ public class TranslationServiceImpl implements TranslationService {
 	}
 
 	@Override
-	public JSONArray select2(String nameTable, String selectedColumn, Boolean json, String column, String col) {
+	public JSONArray select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO Columns) {
+		String abacus = "TABLE_ABACUS_NAME";
+		String valueJson = "VALUE_JSON";
+		JSONArray selectarray = select1(nameTable, selectedColumn, json, '"' + Columns.getColumn() + '"');
+		logger.info("columns.getColumn() : {}", '"' + Columns.getColumn() + '"');
+		logger.info("selectarray : {}", selectarray);
+		JSONArray lastArray = nameTypeColumnDatajson(nameTable, selectedColumn, json);
+		List<String> select2Array = new ArrayList<>();
 
-		JSONArray selectarray = select1(nameTable, selectedColumn, json, column);
-		List<String> select2array = new ArrayList<>();
+		for (int i = 0; i < lastArray.length(); i++) {
+			JSONObject jsonObj = lastArray.getJSONObject(i);
+			logger.info("jsonObj :{} ", jsonObj.get(abacus));
+
+			if (jsonObj.get(abacus).equals(Columns.getColumn())) {
+				logger.info("true ");
+				Object columns = jsonObj.get(valueJson);
+				logger.info("columns :{} ", columns);
+
+			} else {
+				logger.info("false ");
+				logger.info("columns.getColumn() : {} ", Columns.getColumn());
+				logger.info("jsonObj :{} ", jsonObj);
+
+			}
+
+		}
+
+		logger.info("selectarray : {}", selectarray.length());
 		for (int i = 0; i < selectarray.length(); i++) {
 			JSONObject jsonObj = selectarray.getJSONObject(i);
-			String valueJson = "VALUE_JSON";
-			String value = jsonObj.getString(valueJson);
-			logger.info("value : {}", value);
-			// select2array.add(((JSONArray) selectarray.get(i)).get("VALUE_JSON"));
+			logger.info("jsonObj :{} ", jsonObj.get(valueJson));
+			String o = jsonObj.get(valueJson).toString();
+			logger.info("object :{} ", o);
+			JSONObject json1 = new JSONObject(o);
+			logger.info("json1 :{} ", json1.get(Columns.getCol()));
+			select2Array.add((String) json1.get(Columns.getCol()));
+
 		}
-		return null;
+		logger.info("select2Array :{} ", select2Array);
+		List<Translation> array_translation_values = translationRepository.findAll();
+		List<Translation> db_data_json = new ArrayList<>();
+		for (int i = 0; i < array_translation_values.size(); i++) {
+			if (array_translation_values.get(i).getName_table().equals(nameTable)) {
+				db_data_json.add(array_translation_values.get(i));
+
+			} else {
+				logger.info("no translation found for this table");
+			}
+
+		}
+		logger.info("db_data_json :{} ", db_data_json);
+		List<String> db1_data_json = new ArrayList<>();
+		for (int i = 0; i < db_data_json.size(); i++) {
+			if (select2Array.contains(db_data_json.get(i).getField_value())) {
+				logger.info("it contains true");
+				db1_data_json.add(db_data_json.get(i).getField_value());
+			}
+		}
+		logger.info("db1_data_json : {} ", db1_data_json);
+		var missing = select2Array.stream().filter(item -> db_data_json.indexOf(item) < 0).collect(Collectors.toList());
+		logger.info("missing : {} ", missing);
+
+		List<Languages> langues = languageRepository.findAll();
+		List<Languages> globalLangues = new ArrayList<>();
+		List<Langues> translationsLangues = new ArrayList<>();
+		for (int i = 0; i < langues.size(); i++) {
+			if (Boolean.TRUE.equals(langues.get(i).getGlobal())) {
+				globalLangues.add(langues.get(i));
+			}
+		}
+		logger.info("global_langues size : {} ", globalLangues.size());
+		JSONArray missingLang = new JSONArray();
+		ObjectMapper mapper = new ObjectMapper();
+		for (int i = 0; i < db_data_json.size(); i++) {
+			translationsLangues.addAll(db_data_json.get(i).getTranslations());
+			List<Langues> pojos = mapper.convertValue(translationsLangues, new TypeReference<List<Langues>>() {
+			});
+			for (int j = 0; j < globalLangues.size(); j++) {
+				String test = globalLangues.get(j).getLocale();
+
+				boolean isPresent = pojos.stream().anyMatch(x -> x.getLangue().equals(test));
+				if (isPresent) {
+					logger.info(": {} ", j);
+				} else {
+					logger.info("false : {} ", j);
+					JSONObject jsonObj = new JSONObject();
+					jsonObj.put("field_value", db_data_json.get(i).getField_value());
+					jsonObj.put("langue", test);
+					missingLang.put(jsonObj);
+				}
+			}
+			logger.info("pojos size : {} ", pojos.size());
+		}
+		logger.info("translations_langues size : {} ", translationsLangues.size());
+		logger.info("missing_lang : {} ", missingLang);
+
+		return selectarray;
+
 	}
 
 }

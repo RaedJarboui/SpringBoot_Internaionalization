@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 
+import com.translate.dto.ColumnsDTO;
 import com.translate.entity.Translation;
 
 /**
@@ -130,6 +131,6 @@ public interface TranslationService {
 	 * @param col            the col
 	 * @return the JSON array
 	 */
-	public JSONArray select2(String nameTable, String selectedColumn, Boolean json, String column, String col);
+	public JSONArray select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO columns);
 
 }

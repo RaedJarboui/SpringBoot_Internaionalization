@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.translate.dto.ColumnsDTO;
 import com.translate.entity.Translation;
 import com.translate.repository.TranslationRepository;
 import com.translate.service.TranslationService;
@@ -144,6 +145,17 @@ public class TranslationController {
 			@RequestBody String column) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(translationService.select1(nameTable, selectedColumn, json, column).toString());
+	}
+
+	@GetMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}/select2")
+	@ResponseBody
+
+	public ResponseEntity<?> select2(@PathVariable("name_table") String nameTable,
+			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json,
+			@RequestBody ColumnsDTO columns) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(translationService.select2(nameTable, selectedColumn, json, columns).toString());
+
 	}
 
 }

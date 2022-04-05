@@ -4,6 +4,7 @@
  */
 package com.translate.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -98,7 +99,7 @@ public interface TranslationService {
 	 * @param selectedColumn the selected column
 	 * @param json           the json
 	 */
-	public void nameColType(String nameTable, String selectedColumn, Boolean json);
+	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json);
 
 	/**
 	 * Name type column datajson.
@@ -131,6 +132,6 @@ public interface TranslationService {
 	 * @param col            the col
 	 * @return the JSON array
 	 */
-	public JSONArray select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO columns);
+	public HashMap<Object, Object> select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO columns);
 
 }

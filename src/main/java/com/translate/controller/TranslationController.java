@@ -4,6 +4,7 @@
  */
 package com.translate.controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -120,10 +121,10 @@ public class TranslationController {
 
 	@GetMapping("/translate/get/table/data/{name_table}/{selected_column}/{Json}")
 	@ResponseBody
-	public void nameTypeColumnData(@PathVariable("name_table") String nameTable,
+	public HashMap<Object, Object> nameTypeColumnData(@PathVariable("name_table") String nameTable,
 			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json) {
 
-		translationService.nameColType(nameTable, selectedColumn, json);
+		return translationService.nameColType(nameTable, selectedColumn, json);
 
 	}
 
@@ -137,24 +138,24 @@ public class TranslationController {
 
 	}
 
-	@GetMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}/select1")
+	@PostMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}/select1")
 	@ResponseBody
 
-	public ResponseEntity<?> columndatajson(@PathVariable("name_table") String nameTable,
+	public ResponseEntity<?> select1(@PathVariable("name_table") String nameTable,
 			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json,
 			@RequestBody String column) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(translationService.select1(nameTable, selectedColumn, json, column).toString());
+				.body(translationService.select1(nameTable, selectedColumn, json, column).toList());
 	}
 
-	@GetMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}/select2")
+	@PostMapping("/translate/get/table/data/json/{name_table}/{selected_column}/{Json}/select2")
 	@ResponseBody
 
-	public ResponseEntity<?> select2(@PathVariable("name_table") String nameTable,
+	public ResponseEntity<HashMap<Object, Object>> select2(@PathVariable("name_table") String nameTable,
 			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json,
 			@RequestBody ColumnsDTO columns) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(translationService.select2(nameTable, selectedColumn, json, columns).toString());
+				.body(translationService.select2(nameTable, selectedColumn, json, columns));
 
 	}
 

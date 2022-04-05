@@ -5,8 +5,10 @@
 package com.translate.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.underscore.U;
 import com.translate.controller.SomeDao;
 import com.translate.dto.ColumnsDTO;
 import com.translate.entity.Languages;
@@ -261,7 +264,7 @@ public class TranslationServiceImpl implements TranslationService {
 	 * java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public void nameColType(String nameTable, String selectedColumn, Boolean json) {
+	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json) {
 
 		Object l = dao.getTableData(nameTable);
 		List<Translation> arrayTranslationValues = translationRepository.findAll();
@@ -327,6 +330,15 @@ public class TranslationServiceImpl implements TranslationService {
 		}
 		logger.info("translations_langues size : {} ", translationsLangues.size());
 		logger.info("missing_lang : {} ", missingLang);
+		HashMap<Object, Object> data = new HashMap<Object, Object>();
+		data.put("arrayString", arrayString);
+		data.put("db_data", dbData);
+		data.put("db1_data", db1Data);
+		data.put("missing", missing);
+		data.put("missing_lang", missingLang.toList());
+		logger.info("data hasmap : {} ", data);
+
+		return data;
 	}
 
 	/**
@@ -429,7 +441,10 @@ public class TranslationServiceImpl implements TranslationService {
 					logger.info("true");
 					JSONObject jsonObj = new JSONObject();
 					jsonObj.put(abacus, ((JSONArray) jsonArray.get(i)).get(abacusNameColumnIndex));
-					jsonObj.put(valueJson, ((JSONArray) jsonArray.get(i)).get(columnIndex));
+					Map<String, Object> jsonObject = U
+							.fromJsonMap((String) ((JSONArray) jsonArray.get(i)).get(columnIndex));
+					System.out.println(jsonObject);
+					jsonObj.put(valueJson, jsonObject);
 					selectarray.put(jsonObj);
 
 				}
@@ -437,13 +452,13 @@ public class TranslationServiceImpl implements TranslationService {
 			}
 
 		}
-		logger.info("selectarray : {}", selectarray);
+		logger.info("selectarray : {}", selectarray.toList());
 
 		return selectarray;
 	}
 
 	@Override
-	public JSONArray select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO Columns) {
+	public HashMap<Object, Object> select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO Columns) {
 		String abacus = "TABLE_ABACUS_NAME";
 		String valueJson = "VALUE_JSON";
 		JSONArray selectarray = select1(nameTable, selectedColumn, json, '"' + Columns.getColumn() + '"');
@@ -502,7 +517,8 @@ public class TranslationServiceImpl implements TranslationService {
 			}
 		}
 		logger.info("db1_data_json : {} ", db1_data_json);
-		var missing = select2Array.stream().filter(item -> db_data_json.indexOf(item) < 0).collect(Collectors.toList());
+		var missing = select2Array.stream().filter(item -> db1_data_json.indexOf(item) < 0)
+				.collect(Collectors.toList());
 		logger.info("missing : {} ", missing);
 
 		List<Languages> langues = languageRepository.findAll();
@@ -538,8 +554,15 @@ public class TranslationServiceImpl implements TranslationService {
 		}
 		logger.info("translations_langues size : {} ", translationsLangues.size());
 		logger.info("missing_lang : {} ", missingLang);
+		HashMap<Object, Object> data = new HashMap<>();
+		data.put("select2_array", select2Array);
+		data.put("db_data_json", db_data_json);
+		data.put("db1_data_json", db1_data_json);
+		data.put("missing", missing);
+		data.put("missing_lang", missingLang.toList());
+		logger.info("data hasmap : {} ", data);
 
-		return selectarray;
+		return data;
 
 	}
 

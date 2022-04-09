@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,11 +32,11 @@ public class TableListController {
 	@Autowired
 	TableListService tableListService;
 
-	@GetMapping("list/tabless")
+	@GetMapping("list/tables/paginate")
 	@ResponseBody
-	public List<TableList> getTablesLists() {
+	public List<TableList> listTablesPaginated(@RequestParam int page, @RequestParam int size) {
 
-		return tableListService.listTables();
+		return tableListService.listTablesPaginated(page, size);
 	}
 
 	@GetMapping("list/tables")
@@ -43,6 +44,13 @@ public class TableListController {
 	public List<String> getTablesList() {
 
 		return tableListService.listTable();
+	}
+
+	@GetMapping("list/tablesfromdb")
+	@ResponseBody
+	public List<TableList> getTablesListFromDB() {
+
+		return tableListService.listTablesFromDB();
 	}
 
 	@PostMapping("list/tables")

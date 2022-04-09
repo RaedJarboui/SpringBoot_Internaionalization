@@ -24,9 +24,14 @@ public class LanguagesServiceImpl implements LanguagesService {
 	@Autowired
 	LanguagesRepository languageRepository;
 
-	public List<Languages> getAllLanguages() {
+	public List<Languages> getPageableLanguages(int page, int size) {
+		if (size <= 0 || page <= 0) {
+			throw new IllegalArgumentException("invalid page size: " + size);
+		}
+		int fromIndex = (page - 1) * size;
+		List<Languages> languages = languageRepository.findAll();
 
-		return languageRepository.findAll();
+		return languages.subList(fromIndex, Math.min(fromIndex + size, languages.size()));
 	}
 
 	public Languages addLanguage(Languages l) {
@@ -47,6 +52,11 @@ public class LanguagesServiceImpl implements LanguagesService {
 		ll.setLanguageName(l.getLanguageName());
 		ll.setGlobal(l.getGlobal());
 		return languageRepository.save(ll);
+	}
+
+	@Override
+	public List<Languages> getAllLanguages() {
+		return languageRepository.findAll();
 	}
 
 }

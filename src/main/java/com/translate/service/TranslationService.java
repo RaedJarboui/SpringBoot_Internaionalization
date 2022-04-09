@@ -99,7 +99,8 @@ public interface TranslationService {
 	 * @param selectedColumn the selected column
 	 * @param json           the json
 	 */
-	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json);
+	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json, int page,
+			int size);
 
 	/**
 	 * Name type column datajson.
@@ -132,6 +133,7 @@ public interface TranslationService {
 	 * @param col            the col
 	 * @return the JSON array
 	 */
-	public HashMap<Object, Object> select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO columns);
+	public HashMap<Object, Object> select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO columns,
+			int page, int size);
 
 }

@@ -34,9 +34,14 @@ public class TableListServiceImpl implements TableListService {
 	}
 
 	@Override
-	public List<TableList> listTables() {
+	public List<TableList> listTablesPaginated(int page, int size) {
+		if (size <= 0 || page <= 0) {
+			throw new IllegalArgumentException("invalid page size: " + size);
+		}
+		int fromIndex = (page - 1) * size;
+		List<TableList> tab = tableListRepository.findAll();
 
-		return tableListRepository.findAll();
+		return tab.subList(fromIndex, Math.min(fromIndex + size, tab.size()));
 	}
 
 	@Override
@@ -84,5 +89,10 @@ public class TableListServiceImpl implements TableListService {
 		tab.setTableName(t.getTableName());
 		tab.setTranslate(t.getTranslate());
 		return tableListRepository.save(tab);
+	}
+
+	@Override
+	public List<TableList> listTablesFromDB() {
+		return tableListRepository.findAll();
 	}
 }

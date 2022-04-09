@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -122,9 +123,10 @@ public class TranslationController {
 	@GetMapping("/translate/get/table/data/{name_table}/{selected_column}/{Json}")
 	@ResponseBody
 	public HashMap<Object, Object> nameTypeColumnData(@PathVariable("name_table") String nameTable,
-			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json) {
+			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json,
+			@RequestParam int page, @RequestParam int size) {
 
-		return translationService.nameColType(nameTable, selectedColumn, json);
+		return translationService.nameColType(nameTable, selectedColumn, json, page, size);
 
 	}
 
@@ -153,9 +155,9 @@ public class TranslationController {
 
 	public ResponseEntity<HashMap<Object, Object>> select2(@PathVariable("name_table") String nameTable,
 			@PathVariable("selected_column") String selectedColumn, @PathVariable("Json") Boolean json,
-			@RequestBody ColumnsDTO columns) {
+			@RequestBody ColumnsDTO columns, @RequestParam int page, @RequestParam int size) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(translationService.select2(nameTable, selectedColumn, json, columns));
+				.body(translationService.select2(nameTable, selectedColumn, json, columns, page, size));
 
 	}
 

@@ -28,9 +28,18 @@ public interface TableListService {
 	/**
 	 * List tables.
 	 *
+	 * @param page the page
+	 * @param size the size
 	 * @return the list
 	 */
-	public List<TableList> listTables();
+	public List<TableList> listTablesPaginated(int page, int size);
+
+	/**
+	 * List tables from DB.
+	 *
+	 * @return the list
+	 */
+	public List<TableList> listTablesFromDB();
 
 	/**
 	 * Adds the list table.

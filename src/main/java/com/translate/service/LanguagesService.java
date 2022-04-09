@@ -7,6 +7,8 @@ import com.translate.entity.Languages;
 public interface LanguagesService {
 	public List<Languages> getAllLanguages();
 
+	public List<Languages> getPageableLanguages(int page, int size);
+
 	public Languages addLanguage(Languages l);
 
 	public void deleteLanguage(int id);

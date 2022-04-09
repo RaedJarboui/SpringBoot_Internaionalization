@@ -264,12 +264,14 @@ public class TranslationServiceImpl implements TranslationService {
 	 * java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json) {
+	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json, int page,
+			int size) {
 
 		Object l = dao.getTableData(nameTable);
 		List<Translation> arrayTranslationValues = translationRepository.findAll();
 		var tables = JSON.toJSONString(l);
 		JSONArray jsonArray = new JSONArray(tables);
+		int count = jsonArray.length();
 		List<String> tabColumnStrings = translationRepository.TablesColumns(nameTable);
 		logger.info("tab_columnStrings : {} ", tabColumnStrings);
 		int columnIndex = tabColumnStrings.indexOf(selectedColumn);
@@ -295,7 +297,9 @@ public class TranslationServiceImpl implements TranslationService {
 			}
 		}
 		logger.info("db1_data : {} ", db1Data);
-		var missing = arrayString.stream().filter(item -> db1Data.indexOf(item) < 0).collect(Collectors.toList());
+		List<String> missing = arrayString.stream().filter(item -> db1Data.indexOf(item) < 0)
+				.collect(Collectors.toList());
+		missing = missing.stream().distinct().collect(Collectors.toList());
 		logger.info("missing : {} ", missing);
 		List<Languages> langues = languageRepository.findAll();
 		List<Languages> globalLangues = new ArrayList<>();
@@ -328,14 +332,21 @@ public class TranslationServiceImpl implements TranslationService {
 			}
 			logger.info("pojos size : {} ", pojos.size());
 		}
+
+		if (size <= 0 || page <= 0) {
+			throw new IllegalArgumentException("invalid page size: " + size);
+		}
+		int fromIndex = (page - 1) * size;
+
 		logger.info("translations_langues size : {} ", translationsLangues.size());
 		logger.info("missing_lang : {} ", missingLang);
 		HashMap<Object, Object> data = new HashMap<Object, Object>();
-		data.put("arrayString", arrayString);
+		data.put("arrayString", arrayString.subList(fromIndex, Math.min(fromIndex + size, arrayString.size())));
 		data.put("db_data", dbData);
 		data.put("db1_data", db1Data);
 		data.put("missing", missing);
 		data.put("missing_lang", missingLang.toList());
+		data.put("count", count);
 		logger.info("data hasmap : {} ", data);
 
 		return data;
@@ -441,9 +452,11 @@ public class TranslationServiceImpl implements TranslationService {
 					logger.info("true");
 					JSONObject jsonObj = new JSONObject();
 					jsonObj.put(abacus, ((JSONArray) jsonArray.get(i)).get(abacusNameColumnIndex));
-					Map<String, Object> jsonObject = U
-							.fromJsonMap((String) ((JSONArray) jsonArray.get(i)).get(columnIndex));
-					System.out.println(jsonObject);
+					String ts = ((String) ((JSONArray) jsonArray.get(i)).get(columnIndex))
+							.replaceAll("(\\r\\n|\\n|\\r)", "");
+					;
+					Map<String, Object> jsonObject = U.fromJsonMap(ts);
+					logger.info("jsonObject : {}", jsonObject);
 					jsonObj.put(valueJson, jsonObject);
 					selectarray.put(jsonObj);
 
@@ -458,7 +471,8 @@ public class TranslationServiceImpl implements TranslationService {
 	}
 
 	@Override
-	public HashMap<Object, Object> select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO Columns) {
+	public HashMap<Object, Object> select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO Columns,
+			int page, int size) {
 		String abacus = "TABLE_ABACUS_NAME";
 		String valueJson = "VALUE_JSON";
 		JSONArray selectarray = select1(nameTable, selectedColumn, json, '"' + Columns.getColumn() + '"');
@@ -497,6 +511,7 @@ public class TranslationServiceImpl implements TranslationService {
 
 		}
 		logger.info("select2Array :{} ", select2Array);
+		int count = select2Array.size();
 		List<Translation> array_translation_values = translationRepository.findAll();
 		List<Translation> db_data_json = new ArrayList<>();
 		for (int i = 0; i < array_translation_values.size(); i++) {
@@ -517,10 +532,10 @@ public class TranslationServiceImpl implements TranslationService {
 			}
 		}
 		logger.info("db1_data_json : {} ", db1_data_json);
-		var missing = select2Array.stream().filter(item -> db1_data_json.indexOf(item) < 0)
+		List<String> missing = select2Array.stream().filter(item -> db1_data_json.indexOf(item) < 0)
 				.collect(Collectors.toList());
+		missing = missing.stream().distinct().collect(Collectors.toList());
 		logger.info("missing : {} ", missing);
-
 		List<Languages> langues = languageRepository.findAll();
 		List<Languages> globalLangues = new ArrayList<>();
 		List<Langues> translationsLangues = new ArrayList<>();
@@ -552,14 +567,19 @@ public class TranslationServiceImpl implements TranslationService {
 			}
 			logger.info("pojos size : {} ", pojos.size());
 		}
+		if (size <= 0 || page <= 0) {
+			throw new IllegalArgumentException("invalid page size: " + size);
+		}
+		int fromIndex = (page - 1) * size;
 		logger.info("translations_langues size : {} ", translationsLangues.size());
 		logger.info("missing_lang : {} ", missingLang);
 		HashMap<Object, Object> data = new HashMap<>();
-		data.put("select2_array", select2Array);
+		data.put("select2_array", select2Array.subList(fromIndex, Math.min(fromIndex + size, select2Array.size())));
 		data.put("db_data_json", db_data_json);
 		data.put("db1_data_json", db1_data_json);
 		data.put("missing", missing);
 		data.put("missing_lang", missingLang.toList());
+		data.put("count", count);
 		logger.info("data hasmap : {} ", data);
 
 		return data;

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +38,13 @@ public class LanguagesController {
 	public List<Languages> getAllLanguages() {
 
 		return languagesService.getAllLanguages();
+	}
+
+	@GetMapping("/paginated/langues")
+	@ResponseBody
+	public List<Languages> getPageableLanguages(@RequestParam int page, @RequestParam int size) {
+
+		return languagesService.getPageableLanguages(page, size);
 	}
 
 	@PostMapping("/langues")

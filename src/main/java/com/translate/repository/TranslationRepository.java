@@ -22,16 +22,18 @@ import com.translate.entity.Translation;
 @Repository
 public interface TranslationRepository extends JpaRepository<Translation, Long> {
 
-	@Query(value = "select table_name from information_schema.tables where TABLE_SCHEMA='translate'",
-			nativeQuery = true)
+	@Query(value = "select table_name from information_schema.tables where TABLE_SCHEMA='translate'", nativeQuery = true)
 	public List<String> TablesList();
 
-	@Query(value = "SELECT COLUMN_NAME,DATA_TYPE  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ='translate' AND TABLE_NAME =:value order by ordinal_position",
-			nativeQuery = true)
+	@Query(value = "SELECT COLUMN_NAME,DATA_TYPE  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ='translate' AND TABLE_NAME =:value order by ordinal_position", nativeQuery = true)
 	public List<String> TablesColumnsType(@Param("value") String value);
 
-	@Query(value = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ='translate' AND TABLE_NAME =:value order by ordinal_position",
-			nativeQuery = true)
+	@Query(value = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ='translate' AND TABLE_NAME =:value order by ordinal_position", nativeQuery = true)
 	public List<String> TablesColumns(@Param("value") String value);
+
+	// @Query("select t.field_value from Translation t join t.translations p where
+	// p.value =: value")
+	@Query(value = "t.field_value from Translation t where t.translations ->> 'value' = :value", nativeQuery = true)
+	public List<String> findAllByValue(@Param("value") String value);
 
 }

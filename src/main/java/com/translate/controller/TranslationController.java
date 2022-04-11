@@ -161,4 +161,13 @@ public class TranslationController {
 
 	}
 
+	@GetMapping("/translate/autocomplete/{langue}/{value}")
+	@ResponseBody
+	public ResponseEntity<?> AutocompleteTranslation(@PathVariable("langue") String langue,
+			@PathVariable("value") String value) {
+
+		return ResponseEntity.status(HttpStatus.OK).body(translationService.AutocompleteTranslation(langue, value));
+
+	}
+
 }

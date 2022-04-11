@@ -98,6 +98,9 @@ public interface TranslationService {
 	 * @param nameTable      the name table
 	 * @param selectedColumn the selected column
 	 * @param json           the json
+	 * @param page           the page
+	 * @param size           the size
+	 * @return the hash map
 	 */
 	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json, int page,
 			int size);
@@ -129,11 +132,21 @@ public interface TranslationService {
 	 * @param nameTable      the name table
 	 * @param selectedColumn the selected column
 	 * @param json           the json
-	 * @param column         the column
-	 * @param col            the col
+	 * @param columns        the columns
+	 * @param page           the page
+	 * @param size           the size
 	 * @return the JSON array
 	 */
 	public HashMap<Object, Object> select2(String nameTable, String selectedColumn, Boolean json, ColumnsDTO columns,
 			int page, int size);
+
+	/**
+	 * Autocomplete translation.
+	 *
+	 * @param value  the value
+	 * @param langue the langue
+	 * @return the list
+	 */
+	public List<String> AutocompleteTranslation(String langue, String value);
 
 }

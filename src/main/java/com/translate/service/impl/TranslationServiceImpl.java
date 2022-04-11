@@ -586,4 +586,60 @@ public class TranslationServiceImpl implements TranslationService {
 
 	}
 
+	@Override
+	public List<String> AutocompleteTranslation(String langue, String value) {
+		List<Languages> langues = languageRepository.findAll();
+		List<Translation> translations = translationRepository.findAll();
+		List<Languages> globalLangues = new ArrayList<>();
+		for (int i = 0; i < langues.size(); i++) {
+			if (Boolean.TRUE.equals(langues.get(i).getGlobal())) {
+				globalLangues.add(langues.get(i));
+			}
+		}
+		logger.info("global_langues size : {} ", globalLangues.size());
+		List<Langues> translationsLangues = new ArrayList<>();
+		ObjectMapper mapper = new ObjectMapper();
+		List<Langues> translations_langues = new ArrayList<>();
+		for (int i = 0; i < translations.size(); i++) {
+			logger.info("translations : {} ", translations.get(i).getTranslations());
+			translationsLangues.addAll(translations.get(i).getTranslations());
+			translations_langues = mapper.convertValue(translationsLangues, new TypeReference<List<Langues>>() {
+			});
+
+		}
+		logger.info("global_langues size : {} ", globalLangues.size());
+		logger.info("translationsLangues size : {} ", translationsLangues);
+		List<String> translations_values = new ArrayList<>();
+		for (int i = 0; i < translations_langues.size(); i++) {
+			for (int j = 0; j < globalLangues.size(); j++) {
+
+				logger.info("translationsLangues languess : {} ", translations_langues.get(i).getValue());
+				if (translations_langues.get(i).getLangue().equals(langue)) {
+					logger.info("true");
+					translations_values.add(translations_langues.get(i).getValue());
+
+				} else
+					logger.info("false");
+
+			}
+		}
+		logger.info("translations_values : {} ", translations_values);
+		List<String> translations_values_no_dup = new ArrayList<>();
+		Set<String> set = new HashSet<>(translations_values);
+		translations_values_no_dup.addAll(set);
+		logger.info("translations_values_no_dup : {} ", translations_values_no_dup);
+		List<String> filtered_translations = new ArrayList<>();
+
+		for (int i = 0; i < translations_values_no_dup.size(); i++) {
+			if (translations_values_no_dup.get(i).indexOf(value) >= 0) {
+				logger.info("value found");
+				filtered_translations.add(translations_values_no_dup.get(i));
+
+			}
+		}
+		logger.info("filtered_translations : {} ", filtered_translations);
+
+		return filtered_translations;
+	}
+
 }

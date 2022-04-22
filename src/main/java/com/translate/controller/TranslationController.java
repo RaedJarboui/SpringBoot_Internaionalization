@@ -170,4 +170,14 @@ public class TranslationController {
 
 	}
 
+	@GetMapping("/translate/i18n/values/{nameTable}/{selectedColumn}/{langue}")
+	@ResponseBody
+	public ResponseEntity<?> get_Values_FromSelectedLang(@PathVariable("nameTable") String nameTable,
+			@PathVariable("selectedColumn") String selectedColumn, @PathVariable("langue") String langue) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(translationService.get_Values_FromSelectedLang(nameTable, selectedColumn, langue));
+
+	}
+
 }

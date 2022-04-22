@@ -143,10 +143,20 @@ public interface TranslationService {
 	/**
 	 * Autocomplete translation.
 	 *
-	 * @param value  the value
 	 * @param langue the langue
+	 * @param value  the value
 	 * @return the list
 	 */
 	public List<String> AutocompleteTranslation(String langue, String value);
+
+	/**
+	 * Gets the values from selected lang.
+	 *
+	 * @param nameTable      the name table
+	 * @param selectedColumn the selected column
+	 * @param langue         the langue
+	 * @return the values from selected lang
+	 */
+	public List<String> get_Values_FromSelectedLang(String nameTable, String selectedColumn, String langue);
 
 }

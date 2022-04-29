@@ -159,4 +159,11 @@ public interface TranslationService {
 	 */
 	public List<String> get_Values_FromSelectedLang(String nameTable, String selectedColumn, String langue);
 
+	/**
+	 * Read docx file.
+	 *
+	 * @param path the path
+	 */
+	public void readDocxFile(String path);
+
 }

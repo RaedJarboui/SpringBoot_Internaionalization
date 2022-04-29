@@ -4,6 +4,8 @@
  */
 package com.translate.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -750,6 +754,22 @@ public class TranslationServiceImpl implements TranslationService {
 
 		return translation_values;
 
+	}
+
+	@Override
+	public void readDocxFile(String path) {
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+			XWPFDocument document = new XWPFDocument(fis);
+			List<XWPFParagraph> paragraphs = document.getParagraphs();
+			for (XWPFParagraph para : paragraphs) {
+				System.out.println(para.getText());
+			}
+			fis.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

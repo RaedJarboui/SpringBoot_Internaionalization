@@ -180,4 +180,11 @@ public class TranslationController {
 
 	}
 
+	@PostMapping("/translate/word")
+	@ResponseBody
+	public void readDocxFiles(@RequestBody String path) {
+
+		translationService.readDocxFile(path);
+	}
+
 }

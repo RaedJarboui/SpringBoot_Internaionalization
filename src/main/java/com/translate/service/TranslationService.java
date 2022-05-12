@@ -4,6 +4,7 @@
  */
 package com.translate.service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -164,6 +165,11 @@ public interface TranslationService {
 	 *
 	 * @param path the path
 	 */
-	public void readDocxFile(String path);
+	public String readDocxFile(String path);
+
+	/**
+	 * Translate text.
+	 */
+	public String TranslateText(String langFrom, String langTo, String text) throws IOException;
 
 }

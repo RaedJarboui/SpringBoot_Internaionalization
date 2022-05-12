@@ -4,8 +4,14 @@
  */
 package com.translate.service.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,8 +44,6 @@ import com.translate.entity.Translation;
 import com.translate.repository.LanguagesRepository;
 import com.translate.repository.TranslationRepository;
 import com.translate.service.TranslationService;
-
-import lombok.var;
 
 /**
  * {@link TranslationServiceImpl} class.
@@ -271,7 +275,7 @@ public class TranslationServiceImpl implements TranslationService {
 	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json, int page,
 			int size) {
 
-		Object l = dao.getTableData(nameTable);
+		var l = dao.getTableData(nameTable);
 		List<Translation> arrayTranslationValues = translationRepository.findAll();
 		var tables = JSON.toJSONString(l);
 		JSONArray jsonArray = new JSONArray(tables);
@@ -757,7 +761,8 @@ public class TranslationServiceImpl implements TranslationService {
 	}
 
 	@Override
-	public void readDocxFile(String path) {
+	public String readDocxFile(String path) {
+		String fulltext = "";
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file.getAbsolutePath());
@@ -765,11 +770,33 @@ public class TranslationServiceImpl implements TranslationService {
 			List<XWPFParagraph> paragraphs = document.getParagraphs();
 			for (XWPFParagraph para : paragraphs) {
 				System.out.println(para.getText());
+				fulltext += "" + para.getText();
+
 			}
 			fis.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return fulltext;
+	}
+
+	@Override
+	public String TranslateText(String from, String to, String text) throws IOException {
+
+		String urlStr = "https://script.google.com/macros/s/AKfycbw3_54xpyvc96xITbPlfR70Nf_4WSfpXTOPuLGYSDFsz3TyazGWIjHpkdfeiIJnWMPG/exec"
+				+ "?q=" + URLEncoder.encode(text, "UTF-8") + "&target=" + to + "&source=" + from;
+		URL url = new URL(urlStr);
+		StringBuilder response = new StringBuilder();
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestProperty("User-Agent", "Mozilla/5.0");
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+		return response.toString();
+
 	}
 
 }

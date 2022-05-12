@@ -4,6 +4,7 @@
  */
 package com.translate.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,8 +29,6 @@ import com.translate.dto.ColumnsDTO;
 import com.translate.entity.Translation;
 import com.translate.repository.TranslationRepository;
 import com.translate.service.TranslationService;
-
-import lombok.var;
 
 /**
  * {@link } class.
@@ -75,7 +74,7 @@ public class TranslationController {
 	@ResponseBody
 	public List<JSONObject> getTableData(@PathVariable("tableName") String tableName) {
 
-		var l = dao.getTableData(tableName);
+		List<JSONObject> l = dao.getTableData(tableName);
 		Gson gson = new Gson();
 		String jsonUsersSet = gson.toJson(l);
 		logger.info("jsonUsersSet: {} ", jsonUsersSet);
@@ -182,9 +181,16 @@ public class TranslationController {
 
 	@PostMapping("/translate/word")
 	@ResponseBody
-	public void readDocxFiles(@RequestBody String path) {
+	public String readDocxFiles(@RequestBody String path) {
 
-		translationService.readDocxFile(path);
+		return translationService.readDocxFile(path);
+	}
+
+	@PostMapping("/translate/text/{langFrom}/{langTo}")
+	@ResponseBody
+	public String TranslateText(@PathVariable("langFrom") String langFrom, @PathVariable("langTo") String langTo,
+			@RequestBody String text) throws IOException {
+		return translationService.TranslateText(langFrom, langTo, text);
 	}
 
 }

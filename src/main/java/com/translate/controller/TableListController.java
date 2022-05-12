@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.translate.dto.TableListPaginationDTO;
 import com.translate.entity.TableList;
 import com.translate.service.TableListService;
 
@@ -65,6 +66,19 @@ public class TableListController {
 	public void addTablesList(@PathVariable("id") int id, @RequestBody TableList TableList) {
 
 		tableListService.editTableList(id, TableList);
+	}
+
+	@PostMapping("/list/tables/find")
+	@ResponseBody
+	public TableListPaginationDTO find(@RequestBody TableListPaginationDTO tableListPaginationDTO) {
+		return tableListService.find(tableListPaginationDTO);
+	}
+
+	@PostMapping("list/tables/new")
+	@ResponseBody
+	public List<TableList> tableList() {
+
+		return tableListService.tableList();
 	}
 
 }

@@ -6,6 +6,7 @@ package com.translate.service;
 
 import java.util.List;
 
+import com.translate.dto.TableListPaginationDTO;
 import com.translate.entity.TableList;
 
 /**
@@ -63,5 +64,7 @@ public interface TableListService {
 	 * @return the table list
 	 */
 	public TableList editTableList(int id, TableList t);
+
+	public TableListPaginationDTO find(TableListPaginationDTO languagesPaginationDTO);
 
 }

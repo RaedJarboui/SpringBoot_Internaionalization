@@ -5,8 +5,11 @@
 package com.translate.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.translate.dto.LanguagesPaginationDTO;
 import com.translate.entity.Languages;
 import com.translate.service.LanguagesService;
 
@@ -47,6 +51,28 @@ public class LanguagesController {
 		return languagesService.getPageableLanguages(page, size);
 	}
 
+	/**
+	 * Search endpoint allows for filtering, sorting and paging.
+	 *
+	 * @param search    Format of search string: {key}{operation}{value?},. ex.
+	 *                  key1:value1,key2>value2,key3+ .
+	 * @param pageSize  number of records per page
+	 * @param pageIndex index of the page requested
+	 * @return List of records
+	 */
+	@GetMapping("/languages")
+	@ResponseBody
+	public ResponseEntity search(@RequestParam("search") String search,
+			@RequestParam(value = "pageIndex") int pageIndex, @RequestParam(value = "pageSize") int pageSize,
+			@RequestParam("sort") int sort) {
+		try {
+			List<Languages> mainObjList = languagesService.search(search, pageIndex, pageSize, sort);
+			return new ResponseEntity(mainObjList, HttpStatus.OK);
+		} catch (Exception ex) {
+			return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@PostMapping("/langues")
 	@ResponseBody
 
@@ -69,6 +95,18 @@ public class LanguagesController {
 
 		languagesService.deleteLanguage(id);
 
+	}
+
+	@GetMapping("/langues/{id}")
+	@ResponseBody
+	public Optional<Languages> findLanguageById(@PathVariable("id") int id) {
+		return languagesService.FindLanguageById(id);
+	}
+
+	@PostMapping("/langues/find")
+	@ResponseBody
+	public LanguagesPaginationDTO find(@RequestBody LanguagesPaginationDTO languagesPaginationDTO) {
+		return languagesService.find(languagesPaginationDTO);
 	}
 
 }

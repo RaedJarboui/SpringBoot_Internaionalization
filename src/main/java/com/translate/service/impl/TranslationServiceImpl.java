@@ -30,16 +30,24 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.underscore.U;
+import com.querydsl.core.BooleanBuilder;
 import com.translate.controller.SomeDao;
 import com.translate.dto.ColumnsDTO;
+import com.translate.dto.TranslationPaginationDTO;
 import com.translate.entity.Languages;
 import com.translate.entity.Langues;
+import com.translate.entity.QTranslation;
 import com.translate.entity.Translation;
 import com.translate.repository.LanguagesRepository;
 import com.translate.repository.TranslationRepository;
@@ -137,9 +145,9 @@ public class TranslationServiceImpl implements TranslationService {
 		List<Translation> arrayTranslations = translationRepository.findAll();
 		boolean found = false;
 		for (int i = 0; i < arrayTranslations.size(); i++) {
-			logger.info(arrayTranslations.get(i).getField_value());
-			if (arrayTranslations.get(i).getField_value().equals(fieldvalue)
-					&& arrayTranslations.get(i).getSelected_column().equals(column)
+			logger.info(arrayTranslations.get(i).getFieldValue());
+			if (arrayTranslations.get(i).getFieldValue().equals(fieldvalue)
+					&& arrayTranslations.get(i).getSelectedColumn().equals(column)
 					&& arrayTranslations.get(i).getName_table().equals(tableName)) {
 				found = true;
 				logger.info("true");
@@ -181,13 +189,13 @@ public class TranslationServiceImpl implements TranslationService {
 			logger.info("size not 0");
 
 			for (Translation ts : arrayTranslations) {
-				if (ts.getField_value().equals(t.getField_value())
-						&& ts.getSelected_column().equals(t.getSelected_column())) {
+				if (ts.getFieldValue().equals(t.getFieldValue())
+						&& ts.getSelectedColumn().equals(t.getSelectedColumn())) {
 					found = true;
 					List<Langues> langues = ts.getTranslations();
 					langues.addAll(t.getTranslations());
 					translationRepository.save(ts);
-					break; // Break out of the loop to skip the remaining items
+					break;
 
 				}
 			}
@@ -285,11 +293,16 @@ public class TranslationServiceImpl implements TranslationService {
 		int columnIndex = tabColumnStrings.indexOf(selectedColumn);
 		logger.info("column_index : {} ", columnIndex);
 		List<String> arrayString = new ArrayList<>();
+		List<String> ArrayString = new ArrayList<>();
 		logger.info("jsonArray : {} ", jsonArray);
 		for (int i = 0; i < jsonArray.length(); i++) {
 			arrayString.add(((JSONArray) jsonArray.get(i)).get(columnIndex).toString());
+			ArrayString.add(((JSONArray) jsonArray.get(i)).get(columnIndex).toString());
+
 		}
 		logger.info("array_string : {} ", arrayString);
+		logger.info("ArrayString : {} ", ArrayString);
+
 		List<Translation> dbData = new ArrayList<>();
 		for (int i = 0; i < arrayTranslationValues.size(); i++) {
 			if (arrayTranslationValues.get(i).getName_table().equals(nameTable)) {
@@ -299,9 +312,9 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("db_data : {} ", dbData);
 		List<String> db1Data = new ArrayList<>();
 		for (int i = 0; i < dbData.size(); i++) {
-			if (arrayString.contains(dbData.get(i).getField_value())) {
+			if (arrayString.contains(dbData.get(i).getFieldValue())) {
 				logger.info("it contains true");
-				db1Data.add(dbData.get(i).getField_value());
+				db1Data.add(dbData.get(i).getFieldValue());
 			}
 		}
 		logger.info("db1_data : {} ", db1Data);
@@ -340,7 +353,7 @@ public class TranslationServiceImpl implements TranslationService {
 				} else {
 					logger.info("false : {} ", j);
 					JSONObject jsonObj = new JSONObject();
-					jsonObj.put("field_value", dbData.get(i).getField_value());
+					jsonObj.put("field_value", dbData.get(i).getFieldValue());
 					jsonObj.put("langue", test);
 					logger.info("obj not existed langue: {} ", globalLangues.get(j).getLanguageName());
 
@@ -351,7 +364,7 @@ public class TranslationServiceImpl implements TranslationService {
 		}
 
 		for (int i = 0; i < dbData.size(); i++) {
-			if (dbData.get(i).getSelected_column().equals(selectedColumn)) {
+			if (dbData.get(i).getSelectedColumn().equals(selectedColumn)) {
 				List<Langues> translationsLanguess = new ArrayList<>();
 				List<Langues> pojos1 = new ArrayList<>();
 				List<String> pojos1_langues = new ArrayList<>();
@@ -372,7 +385,7 @@ public class TranslationServiceImpl implements TranslationService {
 				if (missing1.size() > 0) {
 					for (int k = 0; k < missing1.size(); k++) {
 						JSONObject jsonObj = new JSONObject();
-						jsonObj.put("field_value", dbData.get(i).getField_value());
+						jsonObj.put("field_value", dbData.get(i).getFieldValue());
 						logger.info("missing1_langues : {} ", missing1.get(k));
 						jsonObj.put("langue", missing1.get(k));
 						missingLang.put(jsonObj);
@@ -392,6 +405,7 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("missing_lang : {} ", missingLang);
 		HashMap<Object, Object> data = new HashMap<Object, Object>();
 		data.put("arrayString", arrayString.subList(fromIndex, Math.min(fromIndex + size, arrayString.size())));
+		data.put("ArrayString", ArrayString);
 		data.put("db_data", dbData);
 		data.put("db1_data", db1Data);
 		data.put("missing", missing);
@@ -530,6 +544,7 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("selectarray : {}", selectarray);
 		JSONArray lastArray = nameTypeColumnDatajson(nameTable, selectedColumn, json);
 		List<String> select2Array = new ArrayList<>();
+		List<String> ArrayString1 = new ArrayList<>();
 
 		for (int i = 0; i < lastArray.length(); i++) {
 			JSONObject jsonObj = lastArray.getJSONObject(i);
@@ -558,6 +573,7 @@ public class TranslationServiceImpl implements TranslationService {
 			JSONObject json1 = new JSONObject(o);
 			logger.info("json1 :{} ", json1.get(Columns.getCol()));
 			select2Array.add((String) json1.get(Columns.getCol()));
+			ArrayString1.add((String) json1.get(Columns.getCol()));
 
 		}
 		logger.info("select2Array :{} ", select2Array);
@@ -576,9 +592,9 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("db_data_json :{} ", db_data_json);
 		List<String> db1_data_json = new ArrayList<>();
 		for (int i = 0; i < db_data_json.size(); i++) {
-			if (select2Array.contains(db_data_json.get(i).getField_value())) {
+			if (select2Array.contains(db_data_json.get(i).getFieldValue())) {
 				logger.info("it contains true");
-				db1_data_json.add(db_data_json.get(i).getField_value());
+				db1_data_json.add(db_data_json.get(i).getFieldValue());
 			}
 		}
 		logger.info("db1_data_json : {} ", db1_data_json);
@@ -613,7 +629,7 @@ public class TranslationServiceImpl implements TranslationService {
 				} else {
 					logger.info("false : {} ", j);
 					JSONObject jsonObj = new JSONObject();
-					jsonObj.put("field_value", db_data_json.get(i).getField_value());
+					jsonObj.put("field_value", db_data_json.get(i).getFieldValue());
 					jsonObj.put("langue", test);
 					missingLang.put(jsonObj);
 				}
@@ -622,7 +638,7 @@ public class TranslationServiceImpl implements TranslationService {
 		}
 
 		for (int i = 0; i < db_data_json.size(); i++) {
-			if (db_data_json.get(i).getSelected_column().equals(selectedColumn)) {
+			if (db_data_json.get(i).getSelectedColumn().equals(selectedColumn)) {
 				List<Langues> translationsLanguess = new ArrayList<>();
 				List<Langues> pojos1 = new ArrayList<>();
 				List<String> pojos1_langues = new ArrayList<>();
@@ -643,7 +659,7 @@ public class TranslationServiceImpl implements TranslationService {
 				if (missing1.size() > 0) {
 					for (int k = 0; k < missing1.size(); k++) {
 						JSONObject jsonObj = new JSONObject();
-						jsonObj.put("field_value", db_data_json.get(i).getField_value());
+						jsonObj.put("field_value", db_data_json.get(i).getFieldValue());
 						logger.info("missing1_langues : {} ", missing1.get(k));
 						jsonObj.put("langue", missing1.get(k));
 						missingLang.put(jsonObj);
@@ -663,6 +679,7 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("missing_lang : {} ", missingLang);
 		HashMap<Object, Object> data = new HashMap<>();
 		data.put("select2_array", select2Array.subList(fromIndex, Math.min(fromIndex + size, select2Array.size())));
+		data.put("ArrayString1", ArrayString1);
 		data.put("db_data_json", db_data_json);
 		data.put("db1_data_json", db1_data_json);
 		data.put("missing", missing);
@@ -738,7 +755,7 @@ public class TranslationServiceImpl implements TranslationService {
 		List<Langues> arrayTranslation_langues = new ArrayList<>();
 		for (int i = 0; i < arrayTranslation.size(); i++) {
 			if (arrayTranslation.get(i).getName_table().equals(nameTable)
-					&& arrayTranslation.get(i).getSelected_column().equals(selectedColumn)) {
+					&& arrayTranslation.get(i).getSelectedColumn().equals(selectedColumn)) {
 				logger.info("true ");
 				arrayTranslation_langues.addAll(arrayTranslation.get(i).getTranslations());
 				translations_langues = mapper.convertValue(arrayTranslation_langues,
@@ -797,6 +814,58 @@ public class TranslationServiceImpl implements TranslationService {
 		in.close();
 		return response.toString();
 
+	}
+
+	@Override
+	public TranslationPaginationDTO find(TranslationPaginationDTO translationPaginationDTO) {
+		List<Translation> translations = translationRepository.findAll();
+		Pageable pageable = null;
+		translationPaginationDTO.setTranslations(new ArrayList<>());
+		QTranslation qtranslation = QTranslation.translation;
+		// init Predicate
+		BooleanBuilder predicate = new BooleanBuilder();
+		// setting default totals pages
+		translationPaginationDTO.setTotalElements(0L);
+		// setting default totals elements
+		translationPaginationDTO.setTotalPages(0);
+
+		// find LIKE field_value
+		if (translationPaginationDTO.getParams() != null) {
+			if (translationPaginationDTO.getParams().getFieldValue() != null) {
+				// logger.info("translation field value not null");
+				predicate.and(
+						qtranslation.fieldValue.like("%" + translationPaginationDTO.getParams().getFieldValue() + "%"));
+			}
+
+		}
+
+		String sortField = translationPaginationDTO.getSortField();
+
+		if (sortField != null) {
+			Direction sort = Sort.Direction.ASC;
+			if ("-1".equals(translationPaginationDTO.getSortDirection())) {
+				sort = Sort.Direction.DESC;
+			}
+			logger.info(" translation sorted field : {}", translationPaginationDTO.getSortField());
+			pageable = PageRequest.of(translationPaginationDTO.getPageNumber(), translationPaginationDTO.getPageSize(),
+					sort, sortField);
+
+		} else {
+
+			pageable = PageRequest.of(translationPaginationDTO.getPageNumber(), translationPaginationDTO.getPageSize(),
+					Sort.Direction.ASC, "fieldValue");
+		}
+
+		// load data Page<translation> pagedResult =
+		Page<Translation> pagedResult = translationRepository.findAll(predicate, pageable);
+		if (pagedResult.hasContent()) {
+			translationPaginationDTO.setTranslations(pagedResult.getContent());
+			logger.info("pageResult get content : {}", pagedResult.getContent().get(0));
+
+			translationPaginationDTO.setTotalElements(translations.size());
+			translationPaginationDTO.setTotalPages(translations.size() / translationPaginationDTO.getPageSize());
+		}
+		return translationPaginationDTO;
 	}
 
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import org.json.JSONArray;
 
 import com.translate.dto.ColumnsDTO;
+import com.translate.dto.TranslationPaginationDTO;
 import com.translate.entity.Translation;
 
 /**
@@ -171,5 +172,7 @@ public interface TranslationService {
 	 * Translate text.
 	 */
 	public String TranslateText(String langFrom, String langTo, String text) throws IOException;
+
+	public TranslationPaginationDTO find(TranslationPaginationDTO translationPaginationDTO);
 
 }

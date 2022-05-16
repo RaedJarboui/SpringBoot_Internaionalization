@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.translate.dto.ColumnsDTO;
+import com.translate.dto.TranslationPaginationDTO;
 import com.translate.entity.Translation;
 import com.translate.repository.TranslationRepository;
 import com.translate.service.TranslationService;
@@ -191,6 +192,12 @@ public class TranslationController {
 	public String TranslateText(@PathVariable("langFrom") String langFrom, @PathVariable("langTo") String langTo,
 			@RequestBody String text) throws IOException {
 		return translationService.TranslateText(langFrom, langTo, text);
+	}
+
+	@PostMapping("/translation/find")
+	@ResponseBody
+	public TranslationPaginationDTO find(@RequestBody TranslationPaginationDTO translationPaginationDTO) {
+		return translationService.find(translationPaginationDTO);
 	}
 
 }

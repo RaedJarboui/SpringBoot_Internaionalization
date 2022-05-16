@@ -20,13 +20,13 @@ public class QTranslation extends EntityPathBase<Translation> {
 
     public static final QTranslation translation = new QTranslation("translation");
 
-    public final StringPath field_value = createString("field_value");
+    public final StringPath fieldValue = createString("fieldValue");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath name_table = createString("name_table");
 
-    public final StringPath selected_column = createString("selected_column");
+    public final StringPath selectedColumn = createString("selectedColumn");
 
     public final ListPath<Langues, SimplePath<Langues>> translations = this.<Langues, SimplePath<Langues>>createList("translations", Langues.class, SimplePath.class, PathInits.DIRECT2);
 

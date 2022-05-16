@@ -41,9 +41,9 @@ public class Translation implements Serializable {
 	@Column(name = "name_table")
 	private String name_table;
 	@Column(name = "field_value")
-	private String field_value;
+	private String fieldValue;
 	@Column(name = "selected_column")
-	private String selected_column;
+	private String selectedColumn;
 	@Type(type = "json")
 	@Column(columnDefinition = "json")
 	private List<Langues> translations;
@@ -62,22 +62,6 @@ public class Translation implements Serializable {
 	public void setTranslations(List<Langues> translations) {
 
 		this.translations = translations;
-	}
-
-	/**
-	 * @return the selected_column
-	 */
-	public String getSelected_column() {
-
-		return selected_column;
-	}
-
-	/**
-	 * @param selected_column the selected_column to set
-	 */
-	public void setSelected_column(String selected_column) {
-
-		this.selected_column = selected_column;
 	}
 
 	/**
@@ -112,20 +96,20 @@ public class Translation implements Serializable {
 		this.name_table = name_table;
 	}
 
-	/**
-	 * @return the field_value
-	 */
-	public String getField_value() {
-
-		return field_value;
+	public String getFieldValue() {
+		return fieldValue;
 	}
 
-	/**
-	 * @param field_value the field_value to set
-	 */
-	public void setField_value(String field_value) {
+	public void setFieldValue(String fieldValue) {
+		this.fieldValue = fieldValue;
+	}
 
-		this.field_value = field_value;
+	public String getSelectedColumn() {
+		return selectedColumn;
+	}
+
+	public void setSelectedColumn(String selectedColumn) {
+		this.selectedColumn = selectedColumn;
 	}
 
 }

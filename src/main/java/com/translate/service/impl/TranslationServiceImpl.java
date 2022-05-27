@@ -9,10 +9,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.underscore.U;
 import com.querydsl.core.BooleanBuilder;
 import com.translate.controller.SomeDao;
+import com.translate.dto.ACM_UDF_LIST_VALUESDTO;
 import com.translate.dto.ColumnsDTO;
 import com.translate.dto.TranslationPaginationDTO;
 import com.translate.entity.Languages;
@@ -140,7 +143,8 @@ public class TranslationServiceImpl implements TranslationService {
 	 * java.lang.String, java.lang.String, com.translate.entity.Translation)
 	 */
 	@Override
-	public void editTranslation(String fieldvalue, String column, String tableName, Translation t) {
+	public void editTranslation(String fieldvalue, String column, String tableName, String tblabacusName,
+			String tblabacusNameColumn, Translation t) {
 
 		List<Translation> arrayTranslations = translationRepository.findAll();
 		boolean found = false;
@@ -282,26 +286,34 @@ public class TranslationServiceImpl implements TranslationService {
 	@Override
 	public HashMap<Object, Object> nameColType(String nameTable, String selectedColumn, Boolean json, int page,
 			int size) {
-
+		String id = "ID_UDF_LIST_VALUE";
 		var l = dao.getTableData(nameTable);
 		List<Translation> arrayTranslationValues = translationRepository.findAll();
 		var tables = JSON.toJSONString(l);
 		JSONArray jsonArray = new JSONArray(tables);
 		int count = jsonArray.length();
+		JSONArray jsonarray = new JSONArray();
 		List<String> tabColumnStrings = translationRepository.TablesColumns(nameTable);
 		logger.info("tab_columnStrings : {} ", tabColumnStrings);
 		int columnIndex = tabColumnStrings.indexOf(selectedColumn);
 		logger.info("column_index : {} ", columnIndex);
 		List<String> arrayString = new ArrayList<>();
 		List<String> ArrayString = new ArrayList<>();
+		int idUdfListValueIndex = tabColumnStrings.indexOf(id);
 		logger.info("jsonArray : {} ", jsonArray);
 		for (int i = 0; i < jsonArray.length(); i++) {
 			arrayString.add(((JSONArray) jsonArray.get(i)).get(columnIndex).toString());
 			ArrayString.add(((JSONArray) jsonArray.get(i)).get(columnIndex).toString());
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("FIELD_NAME", ((JSONArray) jsonArray.get(i)).get(columnIndex).toString());
+			if (idUdfListValueIndex != -1)
+				jsonObj.put("ID_UDF_LIST_VALUE", ((JSONArray) jsonArray.get(i)).get(idUdfListValueIndex).toString());
+			jsonarray.put(jsonObj);
 
 		}
 		logger.info("array_string : {} ", arrayString);
 		logger.info("ArrayString : {} ", ArrayString);
+		logger.info("jsonarray : {} ", jsonarray);
 
 		List<Translation> dbData = new ArrayList<>();
 		for (int i = 0; i < arrayTranslationValues.size(); i++) {
@@ -397,7 +409,9 @@ public class TranslationServiceImpl implements TranslationService {
 
 		}
 
-		if (size <= 0 || page <= 0) {
+		if (size <= 0 || page <= 0)
+
+		{
 			throw new IllegalArgumentException("invalid page size: " + size);
 		}
 		int fromIndex = (page - 1) * size;
@@ -410,6 +424,7 @@ public class TranslationServiceImpl implements TranslationService {
 		data.put("db1_data", db1Data);
 		data.put("missing", missing);
 		data.put("missing_lang", missingLang.toList());
+		data.put("jsonArray", jsonarray.toList());
 		data.put("count", count);
 		logger.info("data hasmap : {} ", data);
 
@@ -671,7 +686,9 @@ public class TranslationServiceImpl implements TranslationService {
 
 		}
 
-		if (size <= 0 || page <= 0) {
+		if (size <= 0 || page <= 0)
+
+		{
 			throw new IllegalArgumentException("invalid page size: " + size);
 		}
 		int fromIndex = (page - 1) * size;
@@ -866,6 +883,38 @@ public class TranslationServiceImpl implements TranslationService {
 			translationPaginationDTO.setTotalPages(translations.size() / translationPaginationDTO.getPageSize());
 		}
 		return translationPaginationDTO;
+	}
+
+	@Override
+	public List<ACM_UDF_LIST_VALUESDTO> findUdfListValues(int id) {
+		List<Object[]> list = translationRepository.find_Acm_UDF_LIST_VALUES(id);
+		logger.info("list : {}", list);
+
+		List<ACM_UDF_LIST_VALUESDTO> acm = list.stream().map(objects -> {
+			// logger.info("objects : {}", objects);
+			ACM_UDF_LIST_VALUESDTO acmudf = new ACM_UDF_LIST_VALUESDTO();
+			acmudf.setId((long) ((BigInteger) objects[0]).intValue());
+			acmudf.setTableAbacusName((String) objects[1]);
+			acmudf.setIdUDFList((long) ((BigInteger) objects[2]).intValue());
+			acmudf.setIdUDFListValue((long) ((BigInteger) objects[3]).intValue());
+			acmudf.setIdUDFListLink((long) ((BigInteger) objects[4]).intValue());
+			acmudf.setScore((long) ((Integer) objects[5]).intValue());
+			acmudf.setName((String) objects[6]);
+			acmudf.setDescription((String) objects[7]);
+			acmudf.setAcmEnabled((Boolean) objects[8]);
+			acmudf.setDate_insertion((Date) objects[9]);
+			acmudf.setInsert_by((String) objects[10]);
+			acmudf.setDate_last_update((Date) objects[11]);
+			acmudf.setUpdated_by((String) objects[12]);
+			acmudf.setAcmVersion((long) ((Integer) objects[13]).intValue());
+			acmudf.setParentUDFListValue((long) ((BigInteger) objects[14]).intValue());
+
+			return acmudf;
+		}).collect(Collectors.toList());
+		logger.info("acm : {}", acm);
+		logger.info("acm size : {}", acm.size());
+
+		return acm;
 	}
 
 }

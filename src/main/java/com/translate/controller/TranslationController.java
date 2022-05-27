@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.translate.dto.ACM_UDF_LIST_VALUESDTO;
 import com.translate.dto.ColumnsDTO;
 import com.translate.dto.TranslationPaginationDTO;
 import com.translate.entity.Translation;
@@ -48,12 +49,14 @@ public class TranslationController {
 	TranslationRepository translationRepository;
 	private static final Logger logger = LogManager.getLogger(TranslationController.class);
 
-	@PutMapping("/translate/edit/{field_value}/{column}/{tableName}")
+	@PutMapping("/translate/edit/{field_value}/{column}/{tableName}/{tblabacusName}/{tblabacusNameColumn}")
 	@ResponseBody
 	public void editTranslation(@PathVariable("field_value") String fieldvalue, @PathVariable("column") String column,
-			@PathVariable("tableName") String tableName, @RequestBody Translation translation) {
+			@PathVariable("tableName") String tableName, @PathVariable("tblabacusName") String tblabacusName,
+			@PathVariable("tblabacusNameColumn") String tblabacusNameColumn, @RequestBody Translation translation) {
 
-		translationService.editTranslation(fieldvalue, column, tableName, translation);
+		translationService.editTranslation(fieldvalue, column, tableName, tblabacusName, tblabacusNameColumn,
+				translation);
 	}
 
 	@PostMapping("/translate/add")
@@ -198,6 +201,13 @@ public class TranslationController {
 	@ResponseBody
 	public TranslationPaginationDTO find(@RequestBody TranslationPaginationDTO translationPaginationDTO) {
 		return translationService.find(translationPaginationDTO);
+	}
+
+	@GetMapping("/find/acm_udf_list_values/{id}")
+	@ResponseBody
+	public List<ACM_UDF_LIST_VALUESDTO> findListAcmUDF(@PathVariable("id") int id) {
+
+		return translationService.findUdfListValues(id);
 	}
 
 }

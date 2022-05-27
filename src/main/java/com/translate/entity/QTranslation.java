@@ -28,6 +28,10 @@ public class QTranslation extends EntityPathBase<Translation> {
 
     public final StringPath selectedColumn = createString("selectedColumn");
 
+    public final StringPath tblabacusName = createString("tblabacusName");
+
+    public final StringPath tblabacusNameColumn = createString("tblabacusNameColumn");
+
     public final ListPath<Langues, SimplePath<Langues>> translations = this.<Langues, SimplePath<Langues>>createList("translations", Langues.class, SimplePath.class, PathInits.DIRECT2);
 
     public QTranslation(String variable) {

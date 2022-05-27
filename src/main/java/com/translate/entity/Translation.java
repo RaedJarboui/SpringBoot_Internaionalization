@@ -44,9 +44,29 @@ public class Translation implements Serializable {
 	private String fieldValue;
 	@Column(name = "selected_column")
 	private String selectedColumn;
+	@Column(name = "tblabacusName")
+	private String tblabacusName;
+	@Column(name = "tblabacusNameColumn")
+	private String tblabacusNameColumn;
 	@Type(type = "json")
 	@Column(columnDefinition = "json")
 	private List<Langues> translations;
+
+	public String getTblabacusName() {
+		return tblabacusName;
+	}
+
+	public void setTblabacusName(String tblabacusName) {
+		this.tblabacusName = tblabacusName;
+	}
+
+	public String getTblabacusNameColumn() {
+		return tblabacusNameColumn;
+	}
+
+	public void setTblabacusNameColumn(String tblabacusNameColumn) {
+		this.tblabacusNameColumn = tblabacusNameColumn;
+	}
 
 	/**
 	 * @return the translations

@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 
+import com.translate.dto.ACM_UDF_LIST_VALUESDTO;
 import com.translate.dto.ColumnsDTO;
 import com.translate.dto.TranslationPaginationDTO;
 import com.translate.entity.Translation;
@@ -55,14 +56,25 @@ public interface TranslationService {
 	public List<String> columnsTables(String value);
 
 	/**
+	 * Find udf list values.
+	 *
+	 * @param id the id
+	 * @return the list
+	 */
+	public List<ACM_UDF_LIST_VALUESDTO> findUdfListValues(int id);
+
+	/**
 	 * Edits the translation.
 	 *
-	 * @param fieldvalue the fieldvalue
-	 * @param column     the column
-	 * @param tableName  the table name
-	 * @param t          the t
+	 * @param fieldvalue          the fieldvalue
+	 * @param column              the column
+	 * @param tableName           the table name
+	 * @param tblabacusName       the tblabacus name
+	 * @param tblabacusNameColumn the tblabacus name column
+	 * @param t                   the t
 	 */
-	public void editTranslation(String fieldvalue, String column, String tableName, Translation t);
+	public void editTranslation(String fieldvalue, String column, String tableName, String tblabacusName,
+			String tblabacusNameColumn, Translation t);
 
 	/**
 	 * Adds the translation.
@@ -165,14 +177,27 @@ public interface TranslationService {
 	 * Read docx file.
 	 *
 	 * @param path the path
+	 * @return the string
 	 */
 	public String readDocxFile(String path);
 
 	/**
 	 * Translate text.
+	 *
+	 * @param langFrom the lang from
+	 * @param langTo   the lang to
+	 * @param text     the text
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public String TranslateText(String langFrom, String langTo, String text) throws IOException;
 
+	/**
+	 * Find.
+	 *
+	 * @param translationPaginationDTO the translation pagination DTO
+	 * @return the translation pagination DTO
+	 */
 	public TranslationPaginationDTO find(TranslationPaginationDTO translationPaginationDTO);
 
 }

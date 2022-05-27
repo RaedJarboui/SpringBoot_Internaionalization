@@ -40,4 +40,7 @@ public interface TranslationRepository extends JpaRepository<Translation, Long>,
 	@Query(value = "t.field_value from Translation t where t.translations ->> 'value' = :value", nativeQuery = true)
 	public List<String> findAllByValue(@Param("value") String value);
 
+	@Query(value = "SELECT * FROM acm_udf_list_values WHERE ID_UDF_LIST_LINK =:id", nativeQuery = true)
+	public List<Object[]> find_Acm_UDF_LIST_VALUES(@Param("id") int id);
+
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.translate.dto.ACM_UDF_LIST_DESCRIPTION;
 import com.translate.dto.ACM_UDF_LIST_VALUESDTO;
 import com.translate.dto.ColumnsDTO;
 import com.translate.dto.TranslationPaginationDTO;
@@ -208,6 +209,15 @@ public class TranslationController {
 	public List<ACM_UDF_LIST_VALUESDTO> findListAcmUDF(@PathVariable("id") int id) {
 
 		return translationService.findUdfListValues(id);
+	}
+
+	@PostMapping("/find/acm_udf_list_values/{nameTable}/{selectedColumn}/{json}")
+	@ResponseBody
+	public HashMap<Object, Object> translateListUDF(@RequestBody ACM_UDF_LIST_DESCRIPTION description,
+			@PathVariable("nameTable") String nameTable, @PathVariable("selectedColumn") String selectedColumn,
+			@PathVariable("json") Boolean json) {
+		return translationService.translateListUDF(description, nameTable, selectedColumn, json);
+
 	}
 
 }

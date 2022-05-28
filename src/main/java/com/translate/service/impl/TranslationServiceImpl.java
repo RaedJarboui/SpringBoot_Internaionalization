@@ -45,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.underscore.U;
 import com.querydsl.core.BooleanBuilder;
 import com.translate.controller.SomeDao;
+import com.translate.dto.ACM_UDF_LIST_DESCRIPTION;
 import com.translate.dto.ACM_UDF_LIST_VALUESDTO;
 import com.translate.dto.ColumnsDTO;
 import com.translate.dto.TranslationPaginationDTO;
@@ -915,6 +916,135 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("acm size : {}", acm.size());
 
 		return acm;
+	}
+
+	@Override
+	public HashMap<Object, Object> translateListUDF(ACM_UDF_LIST_DESCRIPTION description, String nameTable,
+			String selectedColumn, Boolean json) {
+
+		var l = dao.getTableData(nameTable);
+		List<Translation> arrayTranslationValues = translationRepository.findAll();
+		var tables = JSON.toJSONString(l);
+		// JSONArray jsonArray = new JSONArray(tables);
+		// int count = jsonArray.length();
+		// JSONArray jsonarray = new JSONArray();
+		// List<String> tabColumnStrings =
+		// translationRepository.TablesColumns(nameTable);
+		logger.info("hellooooooooooooo ");
+
+		logger.info("array_string : {} ", description.getDescription());
+
+		List<Translation> dbData = new ArrayList<>();
+		for (int i = 0; i < arrayTranslationValues.size(); i++) {
+			if (arrayTranslationValues.get(i).getName_table().equals(nameTable)) {
+				dbData.add(arrayTranslationValues.get(i));
+			}
+		}
+		logger.info("db_data : {} ", dbData);
+		List<String> db1Data = new ArrayList<>();
+		for (int i = 0; i < dbData.size(); i++) {
+			if (description.getDescription().contains(dbData.get(i).getFieldValue())) {
+				logger.info("it contains true");
+				db1Data.add(dbData.get(i).getFieldValue());
+			}
+		}
+		logger.info("db1_data : {} ", db1Data);
+		List<String> missing = description.getDescription().stream().filter(item -> db1Data.indexOf(item) < 0)
+				.collect(Collectors.toList());
+		missing = missing.stream().distinct().collect(Collectors.toList());
+		logger.info("missing : {} ", missing);
+		List<Languages> langues = languageRepository.findAll();
+		List<Languages> globalLangues = new ArrayList<>();
+		List<String> globalLanguesLocal = new ArrayList<>();
+		List<Langues> translationsLangues = new ArrayList<>();
+		for (int i = 0; i < langues.size(); i++) {
+			if (Boolean.TRUE.equals(langues.get(i).getGlobal())) {
+				globalLangues.add(langues.get(i));
+				globalLanguesLocal.add(langues.get(i).getLocale());
+			}
+		}
+		logger.info("global_langues size : {} ", globalLangues.size());
+		JSONArray missingLang = new JSONArray();
+		ObjectMapper mapper = new ObjectMapper();
+		for (int i = 0; i < dbData.size(); i++) {
+			translationsLangues.addAll(dbData.get(i).getTranslations());
+			List<Langues> pojos = mapper.convertValue(translationsLangues, new TypeReference<List<Langues>>() {
+
+			});
+			logger.info("translationsLangues : {} ", translationsLangues);
+
+			for (int j = 0; j < globalLangues.size(); j++) {
+				String test = globalLangues.get(j).getLocale();
+
+				boolean isPresent = pojos.stream().anyMatch(x -> x.getLangue().equals(test));
+				if (isPresent) {
+					logger.info(": {} ", j);
+					logger.info("existed langue : {} ", globalLangues.get(j).getLanguageName());
+
+				} else {
+					logger.info("false : {} ", j);
+					JSONObject jsonObj = new JSONObject();
+					jsonObj.put("field_value", dbData.get(i).getFieldValue());
+					jsonObj.put("langue", test);
+					logger.info("obj not existed langue: {} ", globalLangues.get(j).getLanguageName());
+
+					missingLang.put(jsonObj);
+				}
+			}
+			logger.info("pojos size : {} ", pojos.size());
+		}
+
+		for (int i = 0; i < dbData.size(); i++) {
+			if (dbData.get(i).getSelectedColumn().equals(selectedColumn)) {
+				List<Langues> translationsLanguess = new ArrayList<>();
+				List<Langues> pojos1 = new ArrayList<>();
+				List<String> pojos1_langues = new ArrayList<>();
+				logger.info("same selected column : {} ", dbData.get(i).getTranslations());
+				translationsLanguess.addAll(dbData.get(i).getTranslations());
+				pojos1 = mapper.convertValue(dbData.get(i).getTranslations(), new TypeReference<List<Langues>>() {
+
+				});
+				for (int j = 0; j < pojos1.size(); j++) {
+					logger.info("pojos1 de : {} ", pojos1.get(j).getLangue());
+					pojos1_langues.add(pojos1.get(j).getLangue());
+
+				}
+				logger.info("pojos1_langues : {} ", pojos1_langues);
+				List<String> missing1 = globalLanguesLocal.stream().filter(item -> pojos1_langues.indexOf(item) < 0)
+						.collect(Collectors.toList());
+				logger.info("missingLanguage de 1 : {} ", missing1);
+				if (missing1.size() > 0) {
+					for (int k = 0; k < missing1.size(); k++) {
+						JSONObject jsonObj = new JSONObject();
+						jsonObj.put("field_value", dbData.get(i).getFieldValue());
+						logger.info("missing1_langues : {} ", missing1.get(k));
+						jsonObj.put("langue", missing1.get(k));
+						missingLang.put(jsonObj);
+
+					}
+				}
+
+			}
+
+		}
+
+//		if (size <= 0 || page <= 0)
+//
+//		{
+//			throw new IllegalArgumentException("invalid page size: " + size);
+//		}
+
+		logger.info("missing_lang : {} ", missingLang);
+		HashMap<Object, Object> data = new HashMap<Object, Object>();
+		data.put("arrayString", description.getDescription());
+		data.put("db_data", dbData);
+		data.put("db1_data", db1Data);
+		data.put("missing", missing);
+		data.put("missing_lang", missingLang.toList());
+		logger.info("data hasmap : {} ", data);
+
+		return data;
+
 	}
 
 }

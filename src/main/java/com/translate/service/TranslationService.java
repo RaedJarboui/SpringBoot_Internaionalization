@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 
+import com.translate.dto.ACM_UDF_LIST_DESCRIPTION;
 import com.translate.dto.ACM_UDF_LIST_VALUESDTO;
 import com.translate.dto.ColumnsDTO;
 import com.translate.dto.TranslationPaginationDTO;
@@ -62,6 +63,19 @@ public interface TranslationService {
 	 * @return the list
 	 */
 	public List<ACM_UDF_LIST_VALUESDTO> findUdfListValues(int id);
+
+	/**
+	 * Translate list UDF.
+	 *
+	 * @param nameTable      the name table
+	 * @param selectedColumn the selected column
+	 * @param json           the json
+	 * @param page           the page
+	 * @param size           the size
+	 * @return the hash map
+	 */
+	public HashMap<Object, Object> translateListUDF(ACM_UDF_LIST_DESCRIPTION description, String nameTable,
+			String selectedColumn, Boolean json);
 
 	/**
 	 * Edits the translation.

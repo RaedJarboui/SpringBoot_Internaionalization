@@ -215,4 +215,6 @@ public interface TranslationService {
 	 */
 	public TranslationPaginationDTO find(TranslationPaginationDTO translationPaginationDTO);
 
+	public List<String> readAcmAddressTranslation(List<String> values, String langue);
+
 }

@@ -221,4 +221,12 @@ public class TranslationController {
 
 	}
 
+	@PostMapping("/find/address/translation/{langue}")
+	@ResponseBody
+	public List<String> readAcmAddressTranslation(@RequestBody List<String> values,
+			@PathVariable("langue") String langue) {
+		return translationService.readAcmAddressTranslation(values, langue);
+
+	}
+
 }

@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.querydsl.core.BooleanBuilder;
@@ -18,6 +19,7 @@ import com.translate.entity.QAddressSetting;
 import com.translate.repository.AddressSettingRepository;
 import com.translate.service.AddressSettingService;
 
+@Service
 public class AddressSettingServiceImpl implements AddressSettingService {
 
 	/** The Constant logger. */

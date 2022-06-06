@@ -1042,4 +1042,49 @@ public class TranslationServiceImpl implements TranslationService {
 
 	}
 
+	@Override
+	public List<String> readAcmAddressTranslation(List<String> values, String langue) {
+
+		List<Translation> arrayTranslationValues = translationRepository.findAll();
+		logger.info("values size : {} ", values.size());
+		List<Translation> translation = new ArrayList<>();
+		List<Translation> arraytranslation = new ArrayList<>();
+
+		for (int i = 0; i < values.size(); i++) {
+			final String valeur = values.get(i);
+			logger.info("valeuuuuuuuuuuur : {} ", valeur);
+			translation = arrayTranslationValues.stream().filter(t -> t.getFieldValue().equals(valeur))
+					.collect(Collectors.toList());
+			arraytranslation.addAll(translation);
+			logger.info("translation value : {} ", translation);
+		}
+		logger.info("translation size : {} ", translation.size());
+		logger.info("arraytranslation size : {} ", arraytranslation.size());
+
+		ObjectMapper mapper = new ObjectMapper();
+		List<Langues> translationsLangues = new ArrayList<>();
+		List<String> translations_values = new ArrayList<>();
+		for (int i = 0; i < arraytranslation.size(); i++) {
+			translationsLangues.addAll(arraytranslation.get(i).getTranslations());
+			List<Langues> pojos = mapper.convertValue(translationsLangues, new TypeReference<List<Langues>>() {
+
+			});
+			logger.info("translationsLangues : {} ", translationsLangues);
+			logger.info("pojos : {} ", pojos);
+			List<Langues> valuesTranslation = pojos.stream().filter(p -> p.getLangue().equals(langue))
+					.collect(Collectors.toList());
+			logger.info("valuesTranslation size : {} ", valuesTranslation.size());
+
+			for (int j = 0; j < valuesTranslation.size(); j++) {
+
+				translations_values.add(valuesTranslation.get(j).getValue());
+			}
+
+		}
+		logger.info("translations_values : {} ", translations_values);
+		translations_values = translations_values.stream().distinct().collect(Collectors.toList());
+
+		return translations_values;
+
+	}
 }

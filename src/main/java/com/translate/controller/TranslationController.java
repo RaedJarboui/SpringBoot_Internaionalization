@@ -174,13 +174,14 @@ public class TranslationController {
 
 	}
 
-	@GetMapping("/translate/i18n/values/{nameTable}/{selectedColumn}/{langue}")
+	@GetMapping("/translate/i18n/values/{nameTable}/{selectedColumn}/{tblabacusName}/{tblabacusNameColumn}/{langue}")
 	@ResponseBody
 	public ResponseEntity<?> get_Values_FromSelectedLang(@PathVariable("nameTable") String nameTable,
-			@PathVariable("selectedColumn") String selectedColumn, @PathVariable("langue") String langue) {
+			@PathVariable("selectedColumn") String selectedColumn, @PathVariable("tblabacusName") String tblabacusName,
+			@PathVariable("tblabacusNameColumn") String tblabacusNameColumn, @PathVariable("langue") String langue) {
 
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(translationService.get_Values_FromSelectedLang(nameTable, selectedColumn, langue));
+		return ResponseEntity.status(HttpStatus.OK).body(translationService.get_Values_FromSelectedLang(nameTable,
+				selectedColumn, tblabacusName, tblabacusNameColumn, langue));
 
 	}
 
@@ -215,8 +216,8 @@ public class TranslationController {
 	@ResponseBody
 	public HashMap<Object, Object> translateListUDF(@RequestBody ACM_UDF_LIST_DESCRIPTION description,
 			@PathVariable("nameTable") String nameTable, @PathVariable("selectedColumn") String selectedColumn,
-			@PathVariable("json") Boolean json) {
-		return translationService.translateListUDF(description, nameTable, selectedColumn, json);
+			@PathVariable("json") Boolean json, @RequestParam int page, @RequestParam int size) {
+		return translationService.translateListUDF(description, nameTable, selectedColumn, json, page, size);
 
 	}
 

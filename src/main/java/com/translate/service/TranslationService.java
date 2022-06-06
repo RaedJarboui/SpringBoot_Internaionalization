@@ -75,7 +75,7 @@ public interface TranslationService {
 	 * @return the hash map
 	 */
 	public HashMap<Object, Object> translateListUDF(ACM_UDF_LIST_DESCRIPTION description, String nameTable,
-			String selectedColumn, Boolean json);
+			String selectedColumn, Boolean json, int page, int size);
 
 	/**
 	 * Edits the translation.
@@ -185,7 +185,8 @@ public interface TranslationService {
 	 * @param langue         the langue
 	 * @return the values from selected lang
 	 */
-	public List<String> get_Values_FromSelectedLang(String nameTable, String selectedColumn, String langue);
+	public List<String> get_Values_FromSelectedLang(String nameTable, String selectedColumn, String tblabacusName,
+			String tblabacusNameColumn, String langue);
 
 	/**
 	 * Read docx file.

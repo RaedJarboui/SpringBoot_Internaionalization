@@ -155,7 +155,7 @@ public class TranslationServiceImpl implements TranslationService {
 					&& arrayTranslations.get(i).getSelectedColumn().equals(column)
 					&& arrayTranslations.get(i).getName_table().equals(tableName)) {
 				found = true;
-				logger.info("true");
+				logger.info("trueeeeeee found");
 				logger.info(t.getTranslations());
 				arrayTranslations.get(i).setTranslations(t.getTranslations());
 				translationRepository.save(arrayTranslations.get(i));
@@ -766,14 +766,17 @@ public class TranslationServiceImpl implements TranslationService {
 	}
 
 	@Override
-	public List<String> get_Values_FromSelectedLang(String nameTable, String selectedColumn, String langue) {
+	public List<String> get_Values_FromSelectedLang(String nameTable, String selectedColumn, String tblabacusName,
+			String tblabacusNameColumn, String langue) {
 		List<Translation> arrayTranslation = translationRepository.findAll();
 		ObjectMapper mapper = new ObjectMapper();
 		List<Langues> translations_langues = new ArrayList<>();
 		List<Langues> arrayTranslation_langues = new ArrayList<>();
 		for (int i = 0; i < arrayTranslation.size(); i++) {
 			if (arrayTranslation.get(i).getName_table().equals(nameTable)
-					&& arrayTranslation.get(i).getSelectedColumn().equals(selectedColumn)) {
+					&& arrayTranslation.get(i).getSelectedColumn().equals(selectedColumn)
+					&& arrayTranslation.get(i).getTblabacusName().equals(tblabacusName)
+					&& arrayTranslation.get(i).getTblabacusNameColumn().equals(tblabacusNameColumn)) {
 				logger.info("true ");
 				arrayTranslation_langues.addAll(arrayTranslation.get(i).getTranslations());
 				translations_langues = mapper.convertValue(arrayTranslation_langues,
@@ -920,20 +923,10 @@ public class TranslationServiceImpl implements TranslationService {
 
 	@Override
 	public HashMap<Object, Object> translateListUDF(ACM_UDF_LIST_DESCRIPTION description, String nameTable,
-			String selectedColumn, Boolean json) {
-
-		var l = dao.getTableData(nameTable);
+			String selectedColumn, Boolean json, int page, int size) {
 		List<Translation> arrayTranslationValues = translationRepository.findAll();
-		var tables = JSON.toJSONString(l);
-		// JSONArray jsonArray = new JSONArray(tables);
-		// int count = jsonArray.length();
-		// JSONArray jsonarray = new JSONArray();
-		// List<String> tabColumnStrings =
-		// translationRepository.TablesColumns(nameTable);
 		logger.info("hellooooooooooooo ");
-
 		logger.info("array_string : {} ", description.getDescription());
-
 		List<Translation> dbData = new ArrayList<>();
 		for (int i = 0; i < arrayTranslationValues.size(); i++) {
 			if (arrayTranslationValues.get(i).getName_table().equals(nameTable)) {
@@ -1028,15 +1021,17 @@ public class TranslationServiceImpl implements TranslationService {
 
 		}
 
-//		if (size <= 0 || page <= 0)
-//
-//		{
-//			throw new IllegalArgumentException("invalid page size: " + size);
-//		}
+		if (size <= 0 || page <= 0)
+
+		{
+			throw new IllegalArgumentException("invalid page size: " + size);
+		}
+		int fromIndex = (page - 1) * size;
 
 		logger.info("missing_lang : {} ", missingLang);
 		HashMap<Object, Object> data = new HashMap<Object, Object>();
-		data.put("arrayString", description.getDescription());
+		data.put("arrayString", description.getDescription().subList(fromIndex,
+				Math.min(fromIndex + size, description.getDescription().size())));
 		data.put("db_data", dbData);
 		data.put("db1_data", db1Data);
 		data.put("missing", missing);

@@ -1049,6 +1049,7 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("values size : {} ", values.size());
 		List<Translation> translation = new ArrayList<>();
 		List<Translation> arraytranslation = new ArrayList<>();
+		List<Langues> translationsLangues = new ArrayList<>();
 
 		for (int i = 0; i < values.size(); i++) {
 			final String valeur = values.get(i);
@@ -1059,27 +1060,63 @@ public class TranslationServiceImpl implements TranslationService {
 			logger.info("translation value : {} ", translation);
 		}
 		logger.info("translation size : {} ", translation.size());
+		int size = arraytranslation.size();
 		logger.info("arraytranslation size : {} ", arraytranslation.size());
 
 		ObjectMapper mapper = new ObjectMapper();
-		List<Langues> translationsLangues = new ArrayList<>();
 		List<String> translations_values = new ArrayList<>();
-		for (int i = 0; i < arraytranslation.size(); i++) {
-			translationsLangues.addAll(arraytranslation.get(i).getTranslations());
-			List<Langues> pojos = mapper.convertValue(translationsLangues, new TypeReference<List<Langues>>() {
+		List<String> valuesTranslation1 = new ArrayList<>();
+		if (size == 0) {
+			logger.info("caaaaaaaaaaaaaaaaaaaaaaaaaaas1111111111111111111111 : {} ");
 
-			});
-			logger.info("translationsLangues : {} ", translationsLangues);
-			logger.info("pojos : {} ", pojos);
-			List<Langues> valuesTranslation = pojos.stream().filter(p -> p.getLangue().equals(langue))
-					.collect(Collectors.toList());
-			logger.info("valuesTranslation size : {} ", valuesTranslation.size());
+			for (int i = 0; i < arrayTranslationValues.size(); i++) {
+				List<Langues> pojos = new ArrayList<>();
+				List<Langues> translationsLangues1 = new ArrayList<>();
+				translationsLangues1.addAll(arrayTranslationValues.get(i).getTranslations());
+				pojos = mapper.convertValue(translationsLangues1, new TypeReference<List<Langues>>() {
+				});
 
-			for (int j = 0; j < valuesTranslation.size(); j++) {
+				for (int j = 0; j < pojos.size(); j++) {
+					logger.info("pojos value : {}" + pojos.get(j).getValue() + "value de i :{}", i);
+					for (int k = 0; k < values.size(); k++) {
 
-				translations_values.add(valuesTranslation.get(j).getValue());
+						if (pojos.get(j).getValue().equals(values.get(k)) && pojos.get(j).getLangue().equals(langue)) {
+							logger.info("value de iiiiiiiiiiiiiiii : {}", i);
+							logger.info("trueeeeeeeeeeeeeeee field value : {}",
+									arrayTranslationValues.get(i).getFieldValue());
+							translations_values.add(arrayTranslationValues.get(i).getFieldValue());
+
+						}
+
+					}
+				}
+
 			}
+			logger.info("values existed : {} ", valuesTranslation1.size());
 
+		} else
+
+		{
+			logger.info("caaaaaaaaaaaaaaaaaaaaaaaaaaas 222222222222222 : {} ");
+			for (int i = 0; i < arraytranslation.size(); i++) {
+				translationsLangues.addAll(arraytranslation.get(i).getTranslations());
+				List<Langues> pojos = mapper.convertValue(translationsLangues, new TypeReference<List<Langues>>() {
+
+				});
+				logger.info("translationsLangues : {} ", translationsLangues);
+				logger.info("pojos : {} ", pojos);
+				List<Langues> valuesTranslation = pojos.stream().filter(p -> p.getLangue().equals(langue))
+						.collect(Collectors.toList());
+				logger.info("valuesTranslation size : {} ", valuesTranslation.size());
+
+				for (int j = 0; j < valuesTranslation.size(); j++) {
+
+					translations_values.add(valuesTranslation.get(j).getValue());
+
+				}
+				logger.info("field value  : {} ", arraytranslation.get(i).getFieldValue());
+
+			}
 		}
 		logger.info("translations_values : {} ", translations_values);
 		translations_values = translations_values.stream().distinct().collect(Collectors.toList());
